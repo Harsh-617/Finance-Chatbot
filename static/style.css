@@ -289,3 +289,16 @@ body {
 .chat-messages::-webkit-scrollbar-thumb:hover {
     background: #a1a1a1;
 }
+
+
+.chart-container {
+    margin: 15px 0;
+    text-align: center;
+}
+
+.chart-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}

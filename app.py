@@ -5,6 +5,7 @@ import requests
 import re
 from dotenv import load_dotenv
 from data_fetcher import DataFetcher
+from visualization import create_price_chart
 
 # Load environment variables
 load_dotenv()
@@ -30,13 +31,16 @@ class ChatBot:
 
         AVAILABLE INTENTS:
 
-        📚 EDUCATIONAL/EXPLANATORY:
+        🎓 EDUCATIONAL/EXPLANATORY:
         - answer_financial_query: When user wants to understand, learn about, or get explanations of financial concepts, companies, assets, or how things work
 
-        🗣️ CONVERSATION:
+        💬 CONVERSATION:
         - greeting_conversation: Basic greetings, small talk, casual conversation
 
-        💎 CRYPTOCURRENCY DATA:
+        📊 VISUALIZATION:
+        - chart: When user wants to see price charts, graphs, or visual data for stocks/crypto over time periods
+
+        🪙 CRYPTOCURRENCY DATA:
         - crypto_price_overview: Current price, market cap, volume, price changes
         - crypto_supply_info: Supply metrics (circulating, total, max supply)
         - crypto_ath_atl: All-time high/low prices and dates
@@ -44,7 +48,7 @@ class ChatBot:
         - crypto_exchange_info: Exchange listings and trading information
         - crypto_metadata: Technical details, algorithms, blockchain specifications
 
-        📊 STOCK DATA:
+        📈 STOCK DATA:
         - stock_price_overview: Current stock price, daily changes, trading info
         - stock_fundamentals: Financial ratios, market cap, P/E, financial health
         - stock_ohlc: Open/High/Low/Close trading data
@@ -66,6 +70,7 @@ class ChatBot:
         1. CORE INTENT ANALYSIS:
         - Are they trying to LEARN/UNDERSTAND something? → Educational
         - Are they trying to GET SPECIFIC DATA/NUMBERS? → Data request
+        - Are they trying to SEE VISUAL CHARTS/GRAPHS? → Chart request
         - Are they just being social? → Conversation
 
         2. CONTEXT UNDERSTANDING:
@@ -82,19 +87,34 @@ class ChatBot:
         - Identify any financial instruments mentioned (stocks, cryptos, currencies)
         - Handle abbreviations, full names, nicknames, or even misspellings
         - Extract symbols, company names, currency codes flexibly
+        - For charts: identify time periods (1d, 7d, 30d, 90d, 1y) and asset type (crypto/stock)
+
+        5. TIME PERIOD EXTRACTION (VERY IMPORTANT):
+        - Look for time expressions like: "last 7 days", "past week", "1 week", "7d", "one week"
+        - Look for: "last 30 days", "past month", "1 month", "30d", "one month"
+        - Look for: "last 90 days", "3 months", "90d", "three months"  
+        - Look for: "last year", "1 year", "1y", "12 months"
+        - Look for: "today", "1 day", "1d", "daily"
+        - Map natural language to standard periods: 1d, 7d, 30d, 90d, 1y
+        - If no time period specified, default to 30d for charts
 
         USER QUERY: "{user_input}"
 
         ANALYSIS APPROACH:
         1. What is the user fundamentally asking for?
         2. What would be the most helpful type of response?
-        3. Are they seeking knowledge/understanding OR specific current data?
+        3. Are they seeking knowledge/understanding OR specific current data OR visual charts?
         4. What financial entities (if any) are they interested in?
+        5. For chart requests: what time period and asset type?
+        6. EXTRACT TIME PERIOD CAREFULLY - look for phrases like "last X days/weeks/months"
 
         RESPONSE STRATEGY:
         - If unclear between educational vs data request, prefer educational (it's safer and more helpful)
+        - If you detect visual words (chart, graph, plot, show me), strongly consider chart intent
         - If you detect a financial entity but unclear intent, consider what's most commonly asked about that entity
+        - For charts: determine if it's crypto or stock, extract time period if mentioned
         - Don't overthink - trust your natural language understanding
+        - PAY SPECIAL ATTENTION to time expressions and map them correctly
 
         EXAMPLE THOUGHT PROCESS:
         
@@ -102,13 +122,17 @@ class ChatBot:
         "btc info" → Could be educational or data, but "info" suggests general information → answer_financial_query  
         "btc now" → "now" suggests current data → crypto_price_overview
         "how's bitcoin doing" → Informal way of asking about performance → crypto_price_overview
-        "tell me about tesla" → "about" suggests educational → answer_financial_query
-        "tesla numbers" → "numbers" suggests data → stock_fundamentals or stock_price_overview
-        "usd eur" → Two currencies mentioned → forex_exchange_rate
-        "apple quarterly results" → Specific request for earnings → stock_earnings
+        "show me bitcoin chart" → User wants to see visual chart → chart (default: 30d, crypto)
+        "bitcoin chart last 7 days" → Chart request with specific timeframe → chart (7d, crypto)
+        "ethereum price chart 1 week" → Chart with timeframe → chart (7d, crypto)
+        "apple stock graph last 30 days" → Visual request for stock → chart (30d, stock)  
+        "tesla chart 90d" → Chart with specific timeframe → chart (90d, stock)
+        "btc 7d chart" → Chart with specific timeframe → chart (7d, crypto)
+        "show me apple stock for past month" → chart (30d, stock)
+        "bitcoin chart past week" → chart (7d, crypto)
 
         Return ONLY a valid JSON object with your best interpretation:
-        {{"intent": "most_appropriate_intent", "asset_name": "company_or_asset_name_if_any", "asset_symbol": "symbol_if_identified", "timeframe": null, "date_range": null, "base_currency": "base_currency_if_forex", "quote_currency": "quote_currency_if_forex"}}
+        {{"intent": "most_appropriate_intent", "asset_name": "company_or_asset_name_if_any", "asset_symbol": "symbol_if_identified", "timeframe": null, "date_range": null, "base_currency": "base_currency_if_forex", "quote_currency": "quote_currency_if_forex", "time_period": "time_period_for_charts_if_chart_intent", "asset_type": "crypto_or_stock_for_charts_if_chart_intent"}}
 
         Trust your understanding. Don't second-guess. Choose the intent that would provide the most helpful response to the user's actual need.
         """
@@ -118,7 +142,7 @@ class ChatBot:
             "messages": [
                 {"role": "user", "content": prompt}
             ],
-            "temperature": 0.2,  # Slightly higher for more natural interpretation
+            "temperature": 0.1,  # Lower temperature for more consistent parsing
             "max_tokens": 300
         }
         
@@ -145,13 +169,36 @@ class ChatBot:
             
         except Exception as e:
             print(f"Error analyzing user input: {e}")
-            # Intelligent fallback - try to determine if it's likely educational or data request
+            # Enhanced fallback with time period extraction
             user_lower = user_input.lower()
+            
+            # Try to extract time period from the input
+            time_period = "30d"  # default
+            if any(phrase in user_lower for phrase in ["last 7 days", "past 7 days", "7 days", "7d", "one week", "1 week", "past week", "last week"]):
+                time_period = "7d"
+            elif any(phrase in user_lower for phrase in ["last 30 days", "past 30 days", "30 days", "30d", "one month", "1 month", "past month", "last month"]):
+                time_period = "30d"
+            elif any(phrase in user_lower for phrase in ["last 90 days", "past 90 days", "90 days", "90d", "3 months", "three months"]):
+                time_period = "90d"
+            elif any(phrase in user_lower for phrase in ["last year", "past year", "1 year", "1y", "12 months"]):
+                time_period = "1y"
+            elif any(phrase in user_lower for phrase in ["today", "1 day", "1d", "daily"]):
+                time_period = "1d"
+            
+            # Determine asset type for charts
+            asset_type = None
+            if any(word in user_lower for word in ["chart", "graph", "plot", "show"]):
+                if any(crypto in user_lower for crypto in ['btc', 'bitcoin', 'eth', 'ethereum', 'crypto']):
+                    asset_type = "crypto"
+                elif any(stock in user_lower for stock in ['aapl', 'apple', 'tsla', 'tesla', 'stock']):
+                    asset_type = "stock"
             
             # Simple heuristics for fallback
             if any(word in user_lower for word in ['what', 'how', 'why', 'explain', 'tell me about', 'define']):
                 intent = "answer_financial_query"
-            elif any(word in user_lower for word in ['price', 'current', 'now', 'today', 'latest', 'show']):
+            elif any(word in user_lower for word in ['chart', 'graph', 'plot', 'show me']):
+                intent = "chart"
+            elif any(word in user_lower for word in ['price', 'current', 'now', 'today', 'latest']):
                 # Try to determine asset type for data request
                 if any(crypto in user_lower for crypto in ['btc', 'bitcoin', 'eth', 'ethereum', 'crypto']):
                     intent = "crypto_price_overview"
@@ -171,7 +218,9 @@ class ChatBot:
                 "timeframe": None,
                 "date_range": None,
                 "base_currency": None,
-                "quote_currency": None
+                "quote_currency": None,
+                "time_period": time_period if intent == "chart" else None,
+                "asset_type": asset_type
             }
 
     
@@ -436,7 +485,43 @@ def chat():
         elif intent == 'forex_economic_data':
             data = data_fetcher.get_forex_economic_data()
             response = format_economic_data_response(data)
+
+
+        elif intent == 'chart':
+            symbol = analysis.get('asset_symbol') or analysis.get('asset_name')
+            time_period = analysis.get('time_period', '30d')
+            asset_type = analysis.get('asset_type')
             
+            if symbol:
+                valid_periods = ["1d", "7d", "30d", "90d", "1y"]
+                if time_period not in valid_periods:
+                    response = f"❌ Invalid time period. I can generate charts for: {', '.join(valid_periods)}"
+                else:
+                    if not asset_type:
+                        response = "❌ Could not determine if this is a crypto or stock asset"
+                    else:
+                        print(f"DEBUG - Creating chart for {symbol}, period: {time_period}, type: {asset_type}")
+                        chart_result = create_price_chart(symbol, time_period, asset_type)
+                        
+                        if chart_result['success']:
+                            change_emoji = "📈" if chart_result['price_change'] >= 0 else "📉"
+                            response = f"""📊 **{chart_result['symbol']} Price Chart ({time_period})**
+
+        💰 Current Price: ${chart_result['current_price']:.2f}
+        {change_emoji} Period Change: {chart_result['price_change']:+.2f}%
+
+        📈 Chart generated successfully!"""
+                            
+                            return jsonify({
+                                'response': response.strip(),
+                                'chart': chart_result['chart_data']
+                            })
+                        else:
+                            response = f"❌ {chart_result['error']}"
+            else:
+                response = '❌ Could not identify asset symbol for chart'
+
+
         else:
             response = "I understand you're asking about financial data, but I need more specific information. Try asking about stock prices, crypto data, or forex rates."
             

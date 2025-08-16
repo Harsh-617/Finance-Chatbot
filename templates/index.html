@@ -44,6 +44,8 @@
                 <button class="example-btn" onclick="sendExample('Show me Apple stock fundamentals')">Apple Fundamentals</button>
                 <button class="example-btn" onclick="sendExample('EUR to USD exchange rate')">EUR/USD Rate</button>
                 <button class="example-btn" onclick="sendExample('Tesla OHLC data')">Tesla OHLC</button>
+                <button class="example-btn" onclick="sendExample('Bitcoin chart last 7 days')">Bitcoin Chart</button>
+                <button class="example-btn" onclick="sendExample('Apple stock chart 30d')">Apple Chart</button>
                 <button class="example-btn" onclick="sendExample('What is market cap?')">Financial Question</button>
             </div>
         </div>
@@ -54,7 +56,7 @@
         const messageInput = document.getElementById('messageInput');
         const sendButton = document.getElementById('sendButton');
 
-        function addMessage(content, isUser = false) {
+        function addMessage(content, isUser = false, chartData = null) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
             
@@ -65,6 +67,20 @@
                 messageContent.innerHTML = `<strong>You:</strong> ${content}`;
             } else {
                 messageContent.innerHTML = `<strong>Assistant:</strong> ${content.replace(/\n/g, '<br>')}`;
+                
+                // Add chart if present
+                if (chartData) {
+                    const chartContainer = document.createElement('div');
+                    chartContainer.className = 'chart-container';
+                    
+                    const chartImage = document.createElement('img');
+                    chartImage.className = 'chart-image';
+                    chartImage.src = `data:image/png;base64,${chartData}`;
+                    chartImage.alt = 'Price Chart';
+                    
+                    chartContainer.appendChild(chartImage);
+                    messageContent.appendChild(chartContainer);
+                }
             }
             
             messageDiv.appendChild(messageContent);
@@ -113,7 +129,13 @@
 
                 const data = await response.json();
                 hideTyping();
-                addMessage(data.response);
+                
+                // Check if response includes a chart
+                if (data.chart) {
+                    addMessage(data.response, false, data.chart);
+                } else {
+                    addMessage(data.response);
+                }
             } catch (error) {
                 hideTyping();
                 addMessage('Sorry, I encountered an error while processing your request. Please try again.');
