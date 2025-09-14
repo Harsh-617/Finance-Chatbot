@@ -1,165 +1,197 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Financial ChatBot</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Financial ChatBot</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <header class="chat-header">
-            <h1>💰 Financial Assistant</h1>
-            <p>Ask me about stocks, crypto, forex, and financial data!</p>
-        </header>
+  <div class="app-container">
+    <!-- Navbar (Top Left) + Title (Top Right) -->
+    <nav class="navbar">
+      <div class="nav-left">
+        <span class="nav-item active">Home</span>
+      </div>
+      <div class="nav-right">
+        <h1 class="app-title">💰 Financial Assistant</h1>
+      </div>
+    </nav>
 
-        <div class="chat-container">
-            <div id="chatMessages" class="chat-messages">
-                <div class="message bot-message">
-                    <div class="message-content">
-                        <strong>Assistant:</strong> Hello! I'm your financial assistant. I can help you with:
-                        <ul>
-                            <li>📈 Stock prices and fundamentals</li>
-                            <li>🪙 Cryptocurrency data and prices</li>
-                            <li>💱 Forex exchange rates</li>
-                            <li>💡 General financial questions</li>
-                        </ul>
-                        What would you like to know?
-                    </div>
-                </div>
-            </div>
-
-            <div class="chat-input-container">
-                <div class="input-group">
-                    <input type="text" id="messageInput" placeholder="Ask me about financial data... (e.g., 'Bitcoin price', 'Apple stock fundamentals', 'EUR to USD')" autocomplete="off">
-                    <button id="sendButton">Send</button>
-                </div>
-            </div>
+    <!-- Chat Section -->
+    <div class="chat-container">
+      <div id="chatMessages" class="chat-messages">
+        <div class="message bot-message">
+          <div class="message-content">
+            <strong>Assistant:</strong> Hello! I'm your financial assistant. I can help you with:
+            <ul>
+              <li>📈 Stock prices and fundamentals</li>
+              <li>🪙 Cryptocurrency data and prices</li>
+              <li>💱 Forex exchange rates</li>
+              <li>💡 General financial questions</li>
+            </ul>
+            What would you like to know?
+          </div>
         </div>
-
-        <div class="examples">
-            <h3>Example Questions:</h3>
-            <div class="example-buttons">
-                <button class="example-btn" onclick="sendExample('What is the current price of Bitcoin?')">Bitcoin Price</button>
-                <button class="example-btn" onclick="sendExample('Show me Apple stock fundamentals')">Apple Fundamentals</button>
-                <button class="example-btn" onclick="sendExample('EUR to USD exchange rate')">EUR/USD Rate</button>
-                <button class="example-btn" onclick="sendExample('Tesla OHLC data')">Tesla OHLC</button>
-                <button class="example-btn" onclick="sendExample('Bitcoin chart last 7 days')">Bitcoin Chart</button>
-                <button class="example-btn" onclick="sendExample('Apple stock chart 30d')">Apple Chart</button>
-                <button class="example-btn" onclick="sendExample('What is market cap?')">Financial Question</button>
-            </div>
-        </div>
+      </div>
     </div>
 
-    <script>
-        const chatMessages = document.getElementById('chatMessages');
-        const messageInput = document.getElementById('messageInput');
-        const sendButton = document.getElementById('sendButton');
+    <!-- Examples & Input (Bottom) -->
+    <div class="chat-bottom">
+      <div class="examples">
+        <button class="example-btn" onclick="sendExample('What is the current price of Bitcoin?')">Bitcoin Price</button>
+        <button class="example-btn" onclick="sendExample('Show me Apple stock fundamentals')">Apple Fundamentals</button>
+        <button class="example-btn" onclick="sendExample('EUR to USD exchange rate')">EUR/USD Rate</button>
+        <button class="example-btn" onclick="sendExample('Tesla OHLC data')">Tesla OHLC</button>
+        <button class="example-btn" onclick="sendExample('Bitcoin chart last 7 days')">Bitcoin Chart</button>
+        <button class="example-btn" onclick="sendExample('Apple stock chart 30d')">Apple Chart</button>
+        <button class="example-btn" onclick="sendExample('What is market cap?')">Financial Question</button>
+      </div>
 
-        function addMessage(content, isUser = false, chartData = null) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
-            
-            const messageContent = document.createElement('div');
-            messageContent.className = 'message-content';
-            
-            if (isUser) {
-                messageContent.innerHTML = `<strong>You:</strong> ${content}`;
-            } else {
-                messageContent.innerHTML = `<strong>Assistant:</strong> ${content.replace(/\n/g, '<br>')}`;
-                
-                // Add chart if present
-                if (chartData) {
-                    const chartContainer = document.createElement('div');
-                    chartContainer.className = 'chart-container';
-                    
-                    const chartImage = document.createElement('img');
-                    chartImage.className = 'chart-image';
-                    chartImage.src = `data:image/png;base64,${chartData}`;
-                    chartImage.alt = 'Price Chart';
-                    
-                    chartContainer.appendChild(chartImage);
-                    messageContent.appendChild(chartContainer);
-                }
-            }
-            
-            messageDiv.appendChild(messageContent);
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+      <div class="chat-input-wrapper">
+        <div class="chat-input-container">
+          <input type="text" id="messageInput" placeholder="💬 Ask me anything finance..." autocomplete="off">
+          <button id="sendButton">➤</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+        <!-- Chart Modal -->
+    <div id="chartModal" class="chart-modal">
+      <span class="chart-close">&times;</span>
+      <img class="chart-modal-content" id="chartModalImg" alt="Expanded Chart">
+    </div>
+
+
+  <script>
+    const chatMessages = document.getElementById('chatMessages');
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+
+    function addMessage(content, isUser = false, chartData = null) {
+      const messageDiv = document.createElement('div');
+      messageDiv.className = `message ${isUser ? 'user-message' : 'bot-message'}`;
+
+      const messageContent = document.createElement('div');
+      messageContent.className = 'message-content';
+
+      if (isUser) {
+        messageContent.innerHTML = `<strong>You:</strong> ${content}`;
+      } else {
+        messageContent.innerHTML = `<strong>Assistant:</strong> ${content.replace(/\n/g, '<br>')}`;
+
+        if (chartData) {
+          const chartContainer = document.createElement('div');
+          chartContainer.className = 'chart-container';
+
+          const chartImage = document.createElement('img');
+          chartImage.className = 'chart-image';
+          chartImage.src = `data:image/png;base64,${chartData}`;
+          chartImage.alt = 'Price Chart';
+
+          chartContainer.appendChild(chartImage);
+          messageContent.appendChild(chartContainer);
         }
+      }
 
-        function showTyping() {
-            const typingDiv = document.createElement('div');
-            typingDiv.className = 'message bot-message typing-message';
-            typingDiv.id = 'typingMessage';
-            
-            const messageContent = document.createElement('div');
-            messageContent.className = 'message-content';
-            messageContent.innerHTML = '<strong>Assistant:</strong> <span class="typing-dots">Analyzing your request<span>.</span><span>.</span><span>.</span></span>';
-            
-            typingDiv.appendChild(messageContent);
-            chatMessages.appendChild(typingDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
+      messageDiv.appendChild(messageContent);
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
 
-        function hideTyping() {
-            const typingMessage = document.getElementById('typingMessage');
-            if (typingMessage) {
-                typingMessage.remove();
-            }
-        }
+    function showTyping() {
+      const typingDiv = document.createElement('div');
+      typingDiv.className = 'message bot-message typing-message';
+      typingDiv.id = 'typingMessage';
 
-        async function sendMessage() {
-            const message = messageInput.value.trim();
-            if (!message) return;
+      const messageContent = document.createElement('div');
+      messageContent.className = 'message-content';
+      messageContent.innerHTML = '<strong>Assistant:</strong> <span class="typing-dots">Analyzing your request<span>.</span><span>.</span><span>.</span></span>';
 
-            addMessage(message, true);
-            messageInput.value = '';
-            sendButton.disabled = true;
-            showTyping();
+      typingDiv.appendChild(messageContent);
+      chatMessages.appendChild(typingDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
 
-            try {
-                const response = await fetch('/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ message: message })
-                });
+    function hideTyping() {
+      const typingMessage = document.getElementById('typingMessage');
+      if (typingMessage) typingMessage.remove();
+    }
 
-                const data = await response.json();
-                hideTyping();
-                
-                // Check if response includes a chart
-                if (data.chart) {
-                    addMessage(data.response, false, data.chart);
-                } else {
-                    addMessage(data.response);
-                }
-            } catch (error) {
-                hideTyping();
-                addMessage('Sorry, I encountered an error while processing your request. Please try again.');
-                console.error('Error:', error);
-            } finally {
-                sendButton.disabled = false;
-            }
-        }
+    async function sendMessage() {
+      const message = messageInput.value.trim();
+      if (!message) return;
 
-        function sendExample(exampleText) {
-            messageInput.value = exampleText;
-            sendMessage();
-        }
+      addMessage(message, true);
+      messageInput.value = '';
+      sendButton.disabled = true;
+      showTyping();
 
-        sendButton.addEventListener('click', sendMessage);
-        
-        messageInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage();
-            }
+      try {
+        const response = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: message })
         });
 
-        // Auto-focus on input
-        messageInput.focus();
-    </script>
+        const data = await response.json();
+        hideTyping();
+
+        if (data.chart) addMessage(data.response, false, data.chart);
+        else addMessage(data.response);
+      } catch (error) {
+        hideTyping();
+        addMessage('⚠️ Sorry, an error occurred. Please try again.');
+        console.error('Error:', error);
+      } finally {
+        sendButton.disabled = false;
+      }
+    }
+
+    function sendExample(exampleText) {
+      messageInput.value = exampleText;
+      sendMessage();
+    }
+
+    sendButton.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', e => {
+      if (e.key === 'Enter') sendMessage();
+    });
+    messageInput.focus();
+
+    // Chart zoom modal
+    const chartModal = document.getElementById("chartModal");
+    const chartModalImg = document.getElementById("chartModalImg");
+    const chartClose = document.querySelector(".chart-close");
+
+    // Delegate chart click events
+    document.addEventListener("click", function (e) {
+    if (e.target.classList.contains("chart-image")) {
+        chartModal.style.display = "flex";
+        chartModalImg.src = e.target.src;
+    }
+    });
+
+    chartClose.onclick = function () {
+    chartModal.style.display = "none";
+    };
+
+    window.onclick = function (e) {
+    if (e.target === chartModal) {
+        chartModal.style.display = "none";
+    }
+    };
+
+    document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+        chartModal.style.display = "none";
+    }
+    });
+
+  </script>
+
+
 </body>
 </html>
