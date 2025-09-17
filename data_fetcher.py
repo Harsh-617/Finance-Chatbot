@@ -117,45 +117,81 @@ def get_crypto_ath_atl(symbol):
         print(f"Error fetching crypto ATH/ATL: {e}")
         return None
 
-def get_crypto_ohlc(symbol, timeframe='daily'):
-    """Get crypto OHLC data from CryptoCompare"""
-    try:
-        if timeframe == 'daily':
-            endpoint = 'v2/histoday'
-            limit = 1
-        elif timeframe == 'weekly':
-            endpoint = 'v2/histoday'
-            limit = 7
-        else:  # monthly
-            endpoint = 'v2/histoday'
-            limit = 30
+# def get_crypto_ohlc(symbol, timeframe='daily'):
+#     """Get crypto OHLC data from CryptoCompare"""
+#     try:
+#         if timeframe == 'daily':
+#             endpoint = 'v2/histoday'
+#             limit = 1
+#         elif timeframe == 'weekly':
+#             endpoint = 'v2/histoday'
+#             limit = 7
+#         else:  # monthly
+#             endpoint = 'v2/histoday'
+#             limit = 30
         
-        url = f"{CRYPTOCOMPARE_BASE_URL}/{endpoint}"
-        params = {
-            'fsym': symbol.upper(),
-            'tsym': 'USD',
-            'limit': limit
-        }
+#         url = f"{CRYPTOCOMPARE_BASE_URL}/{endpoint}"
+#         params = {
+#             'fsym': symbol.upper(),
+#             'tsym': 'USD',
+#             'limit': limit
+#         }
+#         if CRYPTOCOMPARE_API_KEY:
+#             params['api_key'] = CRYPTOCOMPARE_API_KEY
+            
+#         response = requests.get(url, params=params, timeout=10)
+#         response.raise_for_status()
+#         data = response.json()
+        
+#         if 'Data' in data and 'Data' in data['Data'] and len(data['Data']['Data']) > 0:
+#             latest = data['Data']['Data'][-1]
+#             return {
+#                 'open': latest['open'],
+#                 'high': latest['high'],
+#                 'low': latest['low'],
+#                 'close': latest['close']
+#             }
+#         return None
+        
+#     except Exception as e:
+#         print(f"Error fetching crypto OHLC: {e}")
+#         return None
+
+def get_crypto_ohlc(symbol, time_period='30d'):
+    """Crypto OHLC: daily candles, aggregated 7-day bar if 7d."""
+    try:
+        days_map = {'1d': 2, '7d': 7, '30d': 30, '90d': 90, '1y': 365}
+        limit = days_map.get(time_period, 30)
+
+        url = f"{CRYPTOCOMPARE_BASE_URL}/v2/histoday"
+        params = {'fsym': symbol.upper(), 'tsym': 'USD', 'limit': limit}
         if CRYPTOCOMPARE_API_KEY:
             params['api_key'] = CRYPTOCOMPARE_API_KEY
-            
-        response = requests.get(url, params=params, timeout=10)
-        response.raise_for_status()
-        data = response.json()
-        
-        if 'Data' in data and 'Data' in data['Data'] and len(data['Data']['Data']) > 0:
-            latest = data['Data']['Data'][-1]
-            return {
-                'open': latest['open'],
-                'high': latest['high'],
-                'low': latest['low'],
-                'close': latest['close']
-            }
-        return None
-        
+
+        res = requests.get(url, params=params, timeout=10).json()
+        if 'Data' not in res or 'Data' not in res['Data']:
+            return None
+
+        raw = res['Data']['Data']                      # list[dict]
+        raw = raw[-days_map.get(time_period, 30):]     # slice requested span
+
+        # ---- weekly aggregation (7-day bar) ----
+        if time_period == '7d' and len(raw) == 7:
+            return {'open':  raw[0]['open'],
+                    'high':  max(d['high'] for d in raw),
+                    'low':   min(d['low']  for d in raw),
+                    'close': raw[-1]['close']}
+
+        # ---- latest daily bar ----
+        latest = raw[-1]
+        return {'open': latest['open'], 'high': latest['high'],
+                'low': latest['low'], 'close': latest['close']}
+
     except Exception as e:
-        print(f"Error fetching crypto OHLC: {e}")
+        print(f"Crypto OHLC error: {e}")
         return None
+
+
 
 def get_crypto_exchange_info(symbol):
     """Get crypto exchange information from CryptoCompare"""
@@ -292,104 +328,131 @@ def get_stock_fundamentals(symbol):
         return None
 
 # def get_stock_ohlc(symbol, timeframe='daily'):
-#     """Get stock OHLC data from Finnhub"""
+#     """Get stock OHLC from Alpha Vantage with Finnhub fallback"""
 #     try:
-#         end_date = int(time.time())
-        
-#         # Set time range and resolution based on timeframe
-#         if timeframe == 'daily':
-#             start_date = end_date - (2 * 24 * 60 * 60)  # 2 days to ensure we get latest complete day
-#             resolution = 'D'
-#         elif timeframe == 'weekly':
-#             start_date = end_date - (14 * 24 * 60 * 60)  # 2 weeks
-#             resolution = 'D'  # Use daily data, aggregate to weekly
-#         else:  # monthly
-#             start_date = end_date - (32 * 24 * 60 * 60)  # ~1 month
-#             resolution = 'D'  # Use daily data, aggregate to monthly
-        
-#         url = f"{FINNHUB_BASE_URL}/stock/candle"
+#         # ✅ Try Alpha Vantage first
+#         url = "https://www.alphavantage.co/query"
 #         params = {
+#             'function': 'TIME_SERIES_DAILY',
 #             'symbol': symbol.upper(),
-#             'resolution': resolution,
-#             'from': start_date,
-#             'to': end_date,
-#             'token': FINNHUB_API_KEY
+#             'apikey': ALPHA_VANTAGE_API_KEY,
+#             'outputsize': 'compact'
 #         }
-        
-#         print(f"DEBUG - Fetching OHLC for {symbol} with params: {params}")
-#         response = requests.get(url, params=params, timeout=10)
-#         response.raise_for_status()
-#         data = response.json()
-        
-#         print(f"DEBUG - Response status: {data.get('s')}")
-#         print(f"DEBUG - Response data keys: {list(data.keys()) if isinstance(data, dict) else 'Not a dict'}")
-        
-#         if data.get('s') == 'ok':
-#             # Check if we have all required OHLC data
-#             required_keys = ['o', 'h', 'l', 'c']
-#             if all(key in data and data[key] and len(data[key]) > 0 for key in required_keys):
-#                 # Get the most recent complete trading period
+#         r = requests.get(url, params=params, timeout=15)
+#         r.raise_for_status()
+#         data = r.json()
+
+#         if 'Error Message' in data or 'Note' in data:
+#             raise ValueError("Alpha Vantage error or rate limit")
+
+#         series = data.get('Time Series (Daily)', {})
+#         if not series:
+#             raise ValueError("No daily data")
+
+#         latest_date = max(series.keys())
+#         latest = series[latest_date]
+#         return {
+#             'open': float(latest['1. open']),
+#             'high': float(latest['2. high']),
+#             'low': float(latest['3. low']),
+#             'close': float(latest['4. close'])
+#         }
+
+#     except Exception as e:
+#         print(f"Alpha Vantage failed for {symbol}: {e}")
+#         # ✅ Fallback to Finnhub
+#         try:
+#             end = int(time.time())
+#             start = end - 86400 * 2  # 2 days
+#             url = f"{FINNHUB_BASE_URL}/stock/candle"
+#             params = {
+#                 'symbol': symbol.upper(),
+#                 'resolution': 'D',
+#                 'from': start,
+#                 'to': end,
+#                 'token': FINNHUB_API_KEY
+#             }
+#             r = requests.get(url, params=params, timeout=10)
+#             r.raise_for_status()
+#             data = r.json()
+
+#             if data.get('s') == 'ok' and len(data.get('c', [])) > 0:
 #                 return {
 #                     'open': data['o'][-1],
 #                     'high': data['h'][-1],
 #                     'low': data['l'][-1],
 #                     'close': data['c'][-1]
 #                 }
-#             else:
-#                 print(f"DEBUG - Missing OHLC data. Available keys: {[k for k in required_keys if k in data]}")
-        
-#         elif data.get('s') == 'no_data':
-#             print(f"DEBUG - Finnhub returned 'no_data' for {symbol}")
-        
-#         else:
-#             print(f"DEBUG - Unexpected response status: {data.get('s')}")
-        
-#         return None
-        
-#     except requests.exceptions.RequestException as e:
-#         print(f"DEBUG - Request error for {symbol}: {e}")
-#         return None
-#     except Exception as e:
-#         print(f"DEBUG - General error fetching OHLC for {symbol}: {e}")
-#         return None
+#         except Exception as e2:
+#             print(f"Finnhub fallback also failed: {e2}")
+#             return None
 
-def get_stock_ohlc(symbol, timeframe='daily'):
-    """Get stock OHLC data from Alpha Vantage (daily only)"""
+#     return None
+
+def get_stock_ohlc(symbol, time_period='30d'):
+    """Stock OHLC: Alpha-Vantage daily, aggregated 7-day bar if 7d, Finnhub fallback."""
     try:
+        # ---------- Alpha-Vantage daily ----------
         url = "https://www.alphavantage.co/query"
-        params = {
-            'function': 'TIME_SERIES_DAILY',
-            'symbol': symbol.upper(),
-            'apikey': ALPHA_VANTAGE_API_KEY,
-            'outputsize': 'compact'
-        }
+        params = {'function': 'TIME_SERIES_DAILY',
+                  'symbol': symbol.upper(),
+                  'outputsize': 'full',
+                  'apikey': ALPHA_VANTAGE_API_KEY}
         r = requests.get(url, params=params, timeout=15)
         r.raise_for_status()
         data = r.json()
 
-        if 'Error Message' in data:
-            print(f"DEBUG - Alpha Vantage error: {data['Error Message']}")
-            return None
-        if 'Note' in data:
-            print('DEBUG - Alpha Vantage rate-limit note')
-            return None
+        if 'Error Message' in data or 'Note' in data:
+            raise ValueError("AV error/limit")
 
         series = data.get('Time Series (Daily)', {})
         if not series:
-            return None
+            raise ValueError("No daily data")
 
-        # newest first
-        dates = sorted(series.keys(), reverse=True)
-        latest = series[dates[0]]
-        return {
-            'open': float(latest['1. open']),
-            'high': float(latest['2. high']),
-            'low': float(latest['3. low']),
-            'close': float(latest['4. close'])
-        }
+        # sort newest-last, slice requested span
+        days_map = {'1d': 1, '7d': 7, '30d': 30, '90d': 90, '1y': 365}
+        span = days_map.get(time_period, 30)
+        dates = sorted(series.keys())[-span:]          # oldest → newest
+
+        # build small list[dict] for the span
+        bars = [{'open': float(series[d]['1. open']),
+                 'high': float(series[d]['2. high']),
+                 'low':  float(series[d]['3. low']),
+                 'close':float(series[d]['4. close'])} for d in dates]
+
+        # weekly aggregation
+        if time_period == '7d' and len(bars) == 7:
+            return {'open':  bars[0]['open'],
+                    'high':  max(b['high'] for b in bars),
+                    'low':   min(b['low']  for b in bars),
+                    'close': bars[-1]['close']}
+
+        # latest daily bar
+        latest = bars[-1]
+        return {'open': latest['open'], 'high': latest['high'],
+                'low': latest['low'], 'close': latest['close']}
+
     except Exception as e:
-        print(f"DEBUG - Alpha Vantage OHLC error for {symbol}: {e}")
-        return None
+        print(f"Alpha-Vantage OHLC failed for {symbol}: {e}")
+        # ---------- Finnhub fallback ----------
+        try:
+            end = int(time.time())
+            start = end - 86400 * (days_map.get(time_period, 30) + 1)
+            url = f"{FINNHUB_BASE_URL}/stock/candle"
+            params = {'symbol': symbol.upper(), 'resolution': 'D',
+                      'from': start, 'to': end, 'token': FINNHUB_API_KEY}
+            r = requests.get(url, params=params, timeout=10)
+            r.raise_for_status()
+            data = r.json()
+            if data.get('s') == 'ok' and len(data.get('c', [])) > 0:
+                return {'open': data['o'][-1], 'high': data['h'][-1],
+                        'low': data['l'][-1], 'close': data['c'][-1]}
+        except Exception as e2:
+            print(f"Finnhub fallback also failed: {e2}")
+            return None
+    return None
+
+
 
 
 def get_stock_earnings(symbol):

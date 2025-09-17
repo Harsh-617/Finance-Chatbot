@@ -162,13 +162,13 @@ def handle_crypto_ath_atl_request(analysis):
         return "Please specify which cryptocurrency's ATH/ATL you'd like to know."
 
 def handle_crypto_ohlc_request(analysis):
-    """Handle cryptocurrency OHLC requests"""
+    """Handle stock OHLC requests"""
     symbol = analysis.get('asset_symbol') or analysis.get('asset_name')
-    timeframe = analysis.get('timeframe', 'daily')
+    time_period = analysis.get('timeframe') or '30d'
     if symbol:
         symbol = symbol.upper()
-        data = data_fetcher.get_crypto_ohlc(symbol, timeframe)
-        return format_crypto_ohlc_response(data, symbol, timeframe)
+        data = data_fetcher.get_crypto_ohlc(symbol, time_period)
+        return format_crypto_ohlc_response(data, symbol, time_period)
     else:
         return "Please specify which cryptocurrency's OHLC data you'd like to see."
 
@@ -257,11 +257,11 @@ def handle_stock_technicals_request(analysis):
 def handle_stock_ohlc_request(analysis):
     """Handle stock OHLC requests"""
     symbol = analysis.get('asset_symbol') or analysis.get('asset_name')
-    timeframe = analysis.get('timeframe', 'daily')
+    time_period = analysis.get('timeframe') or '30d'
     if symbol:
         symbol = symbol.upper()
-        data = data_fetcher.get_stock_ohlc(symbol, timeframe)
-        return format_stock_ohlc_response(data, symbol, timeframe)
+        data = data_fetcher.get_stock_ohlc(symbol, time_period)
+        return format_stock_ohlc_response(data, symbol, time_period)
     else:
         return "Please specify which stock's OHLC data you'd like to see."
 

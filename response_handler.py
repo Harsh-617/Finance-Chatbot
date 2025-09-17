@@ -110,12 +110,12 @@ ATL Price: ${data.get('atl', 'N/A')}
 ATL Date: {data.get('atl_date', 'N/A')}
 """
 
-def format_crypto_ohlc_response(data, symbol, timeframe):
+def format_crypto_ohlc_response(data, symbol, time_period):
     """Format crypto OHLC response"""
     if not data:
         return f"Sorry, I couldn't fetch OHLC data for {symbol.upper()}."
     
-    return f"""📈 **{symbol.upper()} OHLC Data ({timeframe})**
+    return f"""📈 **{symbol.upper()} OHLC Data ({time_period})**
 
 Open: ${data.get('open', 'N/A')}
 High: ${data.get('high', 'N/A')}
@@ -255,12 +255,12 @@ RSI (14): {data.get('rsi', 'N/A')}
 SMA (20): {data.get('sma_20', 'N/A')}
 """
 
-def format_stock_ohlc_response(data, symbol, timeframe):
+def format_stock_ohlc_response(data, symbol, time_period):
     """Format stock OHLC response"""
     if not data:
         return f"Sorry, I couldn't fetch OHLC data for {symbol.upper()}."
     
-    return f"""📈 **{symbol.upper()} OHLC Data ({timeframe})**
+    return f"""📈 **{symbol.upper()} OHLC Data ({time_period})**
 
 Open: ${data.get('open', 'N/A')}
 High: ${data.get('high', 'N/A')}
@@ -351,6 +351,7 @@ def answer_financial_query(user_input):
     - Draw from your knowledge of financial markets, trading, investment principles, and economic concepts
     - Be helpful and informative without being overly technical
     - Try to answer each query in 2-3 paragraphs
+    - answer only what is asked
 
     User question: {user_input}
     """

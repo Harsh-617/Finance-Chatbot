@@ -564,7 +564,10 @@ USER QUERY: "{user_input}"
 Return ONLY this JSON:
 {{"intent": "intent_name", "asset_name": "name_if_found", "asset_symbol": "SYMBOL_IF_FOUND",  "asset_type": "crypto_or_stock_or_null", "base_currency": "BASE_IF_FOREX", "quote_currency": "QUOTE_IF_FOREX", "time_period": "period_if_chart", "timeframe": null, "date_range": null}}
 
-Be precise. If someone asks "what is the price of bitcoin" they want DATA not education. Also tesla ohlc data is stock ohlc not crypto ohlc."""
+Be precise. If someone asks "what is the price of bitcoin" they want DATA not education. Also tesla ohlc data is stock ohlc not crypto ohlc.
+
+Also extract timeframe for OHLC data for both crypto and stocks.
+for example: if user asks daily ohlc for btc, then here the timeframe is daily."""
 
     payload = {
         "model": "llama-3.1-8b-instant",
@@ -683,7 +686,7 @@ def pattern_fallback_analysis(user_input):
         symbol = potential_symbols[0] if potential_symbols else None
         asset_type = guess_asset_type(symbol, user_lower) if symbol else None
         intent = "crypto_ohlc" if asset_type == "crypto" else "stock_ohlc"
-        return create_intent_response(intent, symbol, symbol, asset_type, timeframe="daily")
+        return create_intent_response(intent, symbol, symbol, asset_type, timeframe=time_period)
     
     # General price requests
     elif re.search(r'\b(?:price|current|now|today|cost|worth|trading)\b', user_lower):
