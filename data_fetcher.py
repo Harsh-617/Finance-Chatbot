@@ -117,45 +117,6 @@ def get_crypto_ath_atl(symbol):
         print(f"Error fetching crypto ATH/ATL: {e}")
         return None
 
-# def get_crypto_ohlc(symbol, timeframe='daily'):
-#     """Get crypto OHLC data from CryptoCompare"""
-#     try:
-#         if timeframe == 'daily':
-#             endpoint = 'v2/histoday'
-#             limit = 1
-#         elif timeframe == 'weekly':
-#             endpoint = 'v2/histoday'
-#             limit = 7
-#         else:  # monthly
-#             endpoint = 'v2/histoday'
-#             limit = 30
-        
-#         url = f"{CRYPTOCOMPARE_BASE_URL}/{endpoint}"
-#         params = {
-#             'fsym': symbol.upper(),
-#             'tsym': 'USD',
-#             'limit': limit
-#         }
-#         if CRYPTOCOMPARE_API_KEY:
-#             params['api_key'] = CRYPTOCOMPARE_API_KEY
-            
-#         response = requests.get(url, params=params, timeout=10)
-#         response.raise_for_status()
-#         data = response.json()
-        
-#         if 'Data' in data and 'Data' in data['Data'] and len(data['Data']['Data']) > 0:
-#             latest = data['Data']['Data'][-1]
-#             return {
-#                 'open': latest['open'],
-#                 'high': latest['high'],
-#                 'low': latest['low'],
-#                 'close': latest['close']
-#             }
-#         return None
-        
-#     except Exception as e:
-#         print(f"Error fetching crypto OHLC: {e}")
-#         return None
 
 def get_crypto_ohlc(symbol, time_period='30d'):
     """Crypto OHLC: daily candles, aggregated 7-day bar if 7d."""
@@ -327,67 +288,6 @@ def get_stock_fundamentals(symbol):
         print(f"Error fetching stock fundamentals: {e}")
         return None
 
-# def get_stock_ohlc(symbol, timeframe='daily'):
-#     """Get stock OHLC from Alpha Vantage with Finnhub fallback"""
-#     try:
-#         # ✅ Try Alpha Vantage first
-#         url = "https://www.alphavantage.co/query"
-#         params = {
-#             'function': 'TIME_SERIES_DAILY',
-#             'symbol': symbol.upper(),
-#             'apikey': ALPHA_VANTAGE_API_KEY,
-#             'outputsize': 'compact'
-#         }
-#         r = requests.get(url, params=params, timeout=15)
-#         r.raise_for_status()
-#         data = r.json()
-
-#         if 'Error Message' in data or 'Note' in data:
-#             raise ValueError("Alpha Vantage error or rate limit")
-
-#         series = data.get('Time Series (Daily)', {})
-#         if not series:
-#             raise ValueError("No daily data")
-
-#         latest_date = max(series.keys())
-#         latest = series[latest_date]
-#         return {
-#             'open': float(latest['1. open']),
-#             'high': float(latest['2. high']),
-#             'low': float(latest['3. low']),
-#             'close': float(latest['4. close'])
-#         }
-
-#     except Exception as e:
-#         print(f"Alpha Vantage failed for {symbol}: {e}")
-#         # ✅ Fallback to Finnhub
-#         try:
-#             end = int(time.time())
-#             start = end - 86400 * 2  # 2 days
-#             url = f"{FINNHUB_BASE_URL}/stock/candle"
-#             params = {
-#                 'symbol': symbol.upper(),
-#                 'resolution': 'D',
-#                 'from': start,
-#                 'to': end,
-#                 'token': FINNHUB_API_KEY
-#             }
-#             r = requests.get(url, params=params, timeout=10)
-#             r.raise_for_status()
-#             data = r.json()
-
-#             if data.get('s') == 'ok' and len(data.get('c', [])) > 0:
-#                 return {
-#                     'open': data['o'][-1],
-#                     'high': data['h'][-1],
-#                     'low': data['l'][-1],
-#                     'close': data['c'][-1]
-#                 }
-#         except Exception as e2:
-#             print(f"Finnhub fallback also failed: {e2}")
-#             return None
-
-#     return None
 
 def get_stock_ohlc(symbol, time_period='30d'):
     """Stock OHLC: Alpha-Vantage daily, aggregated 7-day bar if 7d, Finnhub fallback."""
