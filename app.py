@@ -26,7 +26,8 @@ from response_handler import (
     format_forex_rate_response,
     format_forex_ohlc_response,
     format_forex_historical_response,
-    format_economic_data_response
+    format_economic_data_response,
+    format_top_movers_response
 )
 from visualization import create_price_chart
 
@@ -118,6 +119,9 @@ def chat():
 
         elif intent == 'chart':
             return handle_chart_request(analysis)
+        
+        elif intent == 'top_market_movers':
+            response = handle_top_movers_request(analysis)
 
         else:
             response = "I understand you're asking about financial data, but I need more specific information. Try asking about stock prices, crypto data, or forex rates."
@@ -345,6 +349,34 @@ def handle_chart_request(analysis):
         })
     else:
         return jsonify({'response': f"❌ {chart_result['error']}"})
+
+
+def handle_top_movers_request(analysis):
+    # 1. safe count extraction
+    try:
+        count = int(analysis.get('limit') or 10)
+    except (TypeError, ValueError):
+        count = 10
+
+    # 2. asset type
+    asset_type = analysis.get('asset_type', 'crypto')
+    if asset_type is None or str(asset_type).lower() == 'null':
+        asset_type = 'crypto'
+
+    # 3. fetch data
+    if asset_type == 'crypto':
+        data = data_fetcher.get_top_crypto_by_mcap(count)
+    elif asset_type == 'stock':
+        data = data_fetcher.get_top_stocks_by_mcap(count)
+    elif asset_type == 'forex':
+        data = data_fetcher.get_top_forex_pairs(count)
+    else:                                               # ‘all’ or anything else
+        data = data_fetcher.get_top_crypto_by_mcap(count)
+
+    # 4. format & return
+    return response_handler.format_top_movers_response(data, asset_type, count)
+
+
 
 @app.errorhandler(404)
 def not_found(error):

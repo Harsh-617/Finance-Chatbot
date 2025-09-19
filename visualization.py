@@ -31,94 +31,73 @@ def create_price_chart(symbol, time_period, asset_type):
         return {'success': False, 'error': f'Error creating chart: {str(e)}'}
 
 def _create_crypto_chart(symbol, time_period, days):
-    """Create crypto price chart using CoinGecko API"""
+    """1-day crypto chart via CryptoCompare (you have API key)"""
+    import traceback, requests, io, base64, matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    import pandas as pd
+    from dotenv import load_dotenv
+    load_dotenv()
+
+    print(f'[CHART-CRYPTO] symbol={symbol} period={time_period} days={days}')
+
     try:
-        coingecko_base_url = "https://api.coingecko.com/api/v3"
-        
-        # First try to find the coin ID
-        coin_id = None
-        
-        # Try direct symbol first (lowercase)
-        url = f"{coingecko_base_url}/coins/{symbol.lower()}/market_chart"
+        api_key = os.getenv('CRYPTOCOMPARE_API_KEY')
+        base    = "https://min-api.cryptocompare.com/data"
+
+        # ---- 1. hourly history for 1-day ----
+        url  = f"{base}/v2/histohour"
         params = {
-            'vs_currency': 'usd',
-            'days': days,
-            'interval': 'daily' if days > 1 else 'hourly'
+            'fsym': symbol.upper(),
+            'tsym': 'USD',
+            'limit': days * 24,          # 24 hours for 1d
+            'api_key': api_key
+        }
+        r = requests.get(url, params=params, timeout=15)
+        print('[CHART-CRYPTO] histohour status:', r.status_code)
+        if r.status_code != 200:
+            return {'success': False, 'error': f'CryptoCompare {r.status_code}'}
+
+        data = r.json()
+        raw  = data.get('Data', {}).get('Data', [])
+        if not raw:
+            return {'success': False, 'error': 'No hourly data'}
+
+        # ---- 2. build DataFrame ----
+        df = pd.DataFrame(raw)
+        df['time'] = pd.to_datetime(df['time'], unit='s')
+        df = df.sort_values('time')
+
+        # ---- 3. plot ----
+        plt.figure(figsize=(12, 6))
+        plt.plot(df['time'], df['close'], color='#f7931a', linewidth=2)
+        plt.title(f'{symbol.upper()} Price Chart ({time_period})', fontsize=16, fontweight='bold')
+        plt.xlabel('Date')
+        plt.ylabel('Price (USD)')
+        plt.grid(True, alpha=0.3)
+        plt.xticks(rotation=45)
+        plt.tight_layout()
+
+        img = io.BytesIO()
+        plt.savefig(img, format='png', dpi=150, bbox_inches='tight')
+        plt.close()
+        img.seek(0)
+        b64 = base64.b64encode(img.read()).decode()
+
+        # ---- 4. same return shape ----
+        return {
+            'success': True,
+            'chart_data': b64,
+            'current_price': float(df['close'].iloc[-1]),
+            'price_change': float(((df['close'].iloc[-1] - df['close'].iloc[0]) / df['close'].iloc[0] * 100)),
+            'symbol': symbol.upper()
         }
 
-        response = requests.get(url, params=params, timeout=10)
-
-        if response.status_code != 200:
-            # Search for coin ID using search endpoint
-            search_url = f"{coingecko_base_url}/search"
-            search_params = {'query': symbol}
-            search_response = requests.get(search_url, params=search_params, timeout=10)
-            
-            if search_response.status_code == 200:
-                search_data = search_response.json()
-                coins = search_data.get('coins', [])
-                
-                # Look for exact symbol match
-                for coin in coins:
-                    if coin.get('symbol', '').upper() == symbol.upper():
-                        coin_id = coin.get('id')
-                        break
-                
-                if coin_id:
-                    url = f"{coingecko_base_url}/coins/{coin_id}/market_chart"
-                    response = requests.get(url, params=params, timeout=10)
-                else:
-                    return {'success': False, 'error': 'Cryptocurrency not found'}
-            else:
-                return {'success': False, 'error': 'Error searching for cryptocurrency'}
-
-        if response.status_code == 200:
-            data = response.json()
-            prices = data.get('prices', [])
-            
-            if not prices:
-                return {'success': False, 'error': 'No price data available'}
-
-            # Convert to DataFrame
-            df = pd.DataFrame(prices, columns=['timestamp', 'price'])
-            df['date'] = pd.to_datetime(df['timestamp'], unit='ms')
-
-            # Create chart
-            plt.figure(figsize=(12, 6))
-            plt.plot(df['date'], df['price'], linewidth=2, color='#f7931a')
-            plt.title(f'{symbol.upper()} Price Chart ({time_period})', fontsize=16, fontweight='bold')
-            plt.xlabel('Date')
-            plt.ylabel('Price (USD)')
-            plt.grid(True, alpha=0.3)
-            plt.xticks(rotation=45)
-
-            # Format y-axis
-            if df['price'].max() > 1000:
-                plt.gca().yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: f'${x:,.0f}'))
-            else:
-                plt.gca().yaxis.set_major_formatter(plt.FuncFormatter(lambda x, p: f'${x:.2f}'))
-
-            plt.tight_layout()
-
-            # Save to base64
-            img_buffer = io.BytesIO()
-            plt.savefig(img_buffer, format='png', dpi=150, bbox_inches='tight')
-            img_buffer.seek(0)
-            chart_b64 = base64.b64encode(img_buffer.read()).decode()
-            plt.close()
-
-            return {
-                'success': True,
-                'chart_data': chart_b64,
-                'current_price': df['price'].iloc[-1],
-                'price_change': ((df['price'].iloc[-1] - df['price'].iloc[0]) / df['price'].iloc[0] * 100),
-                'symbol': symbol.upper()
-            }
-        else:
-            return {'success': False, 'error': 'Failed to fetch cryptocurrency data'}
-
     except Exception as e:
-        return {'success': False, 'error': f'Error creating crypto chart: {str(e)}'}
+        print('[CHART-CRYPTO] exception:', e)
+        traceback.print_exc()
+        return {'success': False, 'error': f'Crypto chart error: {e}'}
+    
 
 def _create_stock_chart(symbol, time_period, days):
     """Create stock price chart using Alpha Vantage API"""

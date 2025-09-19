@@ -750,3 +750,78 @@ def get_forex_economic_data(country='US'):
     except Exception as e:
         print(f"Error fetching forex economic data: {e}")
         return None
+
+
+# ========== TOP-MOVERS FETCHERS ==========
+def get_top_crypto_by_mcap(limit=10):
+    """Top cryptos by market-cap from CoinGecko"""
+    try:
+        url = f"{COINGECKO_BASE_URL}/coins/markets"
+        params = {'vs_currency':'usd','order':'market_cap_desc','per_page':limit,'page':1}
+        r = requests.get(url, params=params, timeout=10).json()
+        return [{'symbol':c['symbol'].upper(),'name':c['name'],'price':c['current_price'],
+                 'mcap':c['market_cap'],'change_24h':c.get('price_change_percentage_24h')} for c in r]
+    except Exception as e:
+        print('Top crypto error:',e); return None
+
+def get_top_stocks_by_mcap(limit=10):
+    import os, requests, traceback
+
+    # 1. ---------- Finnhub (needs valid FINNHUB_API_KEY) ----------
+    try:
+        url = f"{FINNHUB_BASE_URL}/stock/most-active"
+        r = requests.get(url, params={'token': FINNHUB_API_KEY}, timeout=10)
+        if r.status_code != 200 or not r.text.startswith('{'):
+            raise ValueError('Finnhub returned non-JSON')
+        fh_data = r.json()
+        most_active = fh_data.get('mostActiveStock', [])[:limit]
+        if most_active:
+            out = []
+            for item in most_active:
+                sym = item['symbol']
+                quote = get_stock_price_overview(sym)
+                out.append({'symbol': sym,
+                            'name': item.get('companyName', 'N/A'),
+                            'price': quote.get('c') if quote else None,
+                            'change_24h': quote.get('dp') if quote else None,
+                            'mcap': None})
+            return out
+    except Exception as e:
+        print('FH most-active failed:', e)
+
+    # 2. ---------- Alpha-Vantage fallback ----------
+    try:
+        url = 'https://www.alphavantage.co/query'
+        params = {'function': 'TOP_GAINERS_LOSERS', 'apikey': ALPHA_VANTAGE_API_KEY}
+        r = requests.get(url, params=params, timeout=15)
+        r.raise_for_status()
+        av_data = r.json()
+        most_active = av_data.get('most_actively_traded', [])[:limit]
+        if most_active:
+            out = []
+            for item in most_active:
+                pc = item['change_percentage'].strip('%')    # <- remove %
+                out.append({'symbol': item['ticker'],
+                            'name': item.get('company_name', item['ticker']),
+                            'price': float(item['price']),
+                            'change_24h': float(pc),
+                            'mcap': None})
+            return out
+    except Exception as e:
+        print('AV fallback failed:', e)
+        traceback.print_exc()
+
+    return None
+
+def get_top_forex_pairs(limit=10):
+    """Return hard-coded major pairs (free forex APIs rarely give ranked list)"""
+    majors = ['EURUSD','USDJPY','GBPUSD','AUDUSD','USDCAD','USDCHF','NZDUSD',
+              'EURJPY','GBPJPY','EURGBP'][:limit]
+    out = []
+    for pair in majors:
+        base,quote = pair[:3],pair[3:]
+        data = get_forex_exchange_rate(base,quote)
+        if data:
+            out.append({'symbol':pair,'name':f'{base}/{quote}',
+                        'price':data.get('c'),'change_24h':data.get('dp')})
+    return out or None

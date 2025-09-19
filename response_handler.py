@@ -328,6 +328,33 @@ def format_economic_data_response(data):
     
     return response
 
+def format_top_movers_response(data, asset_type, count):
+    """
+    Pretty-print the top-<count> list for crypto / stock / forex.
+    data  : list[dict]  (from get_top_*_by_mcap)
+    asset_type : 'crypto' | 'stock' | 'forex'
+    count : int (user-requested number)
+    """
+    if not data:
+        return f"Sorry, I couldn't fetch the top {asset_type} list right now."
+
+    emoji = {'crypto': '🪙', 'stock': '📈', 'forex': '💱'}.get(asset_type, '📊')
+    lines = [f"{emoji} **Top {count} {asset_type.capitalize()} Assets**", ""]
+
+    for idx, it in enumerate(data[:count], 1):          # slice to requested length
+        sym   = it['symbol']
+        name  = it.get('name', '')
+        price = it['price']
+        chg   = it.get('change_24h')
+
+        price_str = f"${price:,.2f}" if price else "N/A"
+        chg_str   = f"{chg:+.2f}%"  if chg  else "N/A"
+
+        lines.append(f"{idx}. **{sym}**  {name}")
+        lines.append(f"   Price: {price_str}  |  24h: {chg_str}")
+
+    return "\n".join(lines)
+
 # ============= CHATBOT RESPONSE FUNCTIONS =============
 
 def answer_financial_query(user_input):

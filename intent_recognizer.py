@@ -531,6 +531,11 @@ def llm_intent_analysis(user_input, groq_api_key):
      - forex_historical_rate: Historical exchange rates
      - forex_economic_data: Economic events affecting currencies
 
+     📊 MARKET OVERVIEW:
+     - top_market_movers: When user asks for "top 5/10/20 cryptos/stocks/forex", "best performers", "biggest gainers", "top market cap", "list top assets"
+
+     for the top_market_movers intent, extract the limit, for example if user asks for top 5 cryptos, then extract the '5' into the limit field.
+
 carefully read each and every word of the user query and then decide which intent best suites the query.
 for example, if there are words like what, how, explain, etc then most probably it is related to the intent answer_financial_query.
 if price or rate or other similar words like this then most probably its related to the other crypto, stocks, or forex intents. 
@@ -544,6 +549,9 @@ INTENT RULES:
    - "bitcoin ohlc" → crypto_ohlc
    - "tesla ohlc data" → stock_ohlc
    - "usd to eur", "dollar euro rate" → forex_exchange_rate
+   - "top 10 cryptocurrencies" → top_market_movers (crypto)
+   - "top 5 stocks" → top_market_movers (stock)
+   - "best forex pairs", "top currencies" → top_market_movers (forex)
 
 2. VISUAL REQUESTS (user wants charts/graphs):
    - "bitcoin chart", "show me apple graph" → chart
@@ -559,10 +567,22 @@ ENTITY EXTRACTION:
 - Determine if it's crypto, stock, or currency based on context
 - For time periods: extract "7d", "30d", "1 week", "last month" etc.
 
+TIME-PERIOD RULE FOR CHARTS:
+- always return one of these exact strings: 1d, 7d, 30d, 90d, 1y
+- map "today|1 day|daily" → "1d"
+- map "last week|7 days|1 week" → "7d"
+- map "last month|30 days|1 month" → "30d"
+- map "last 90 days|3 months" → "90d"
+- map "last year|1 year|12 months" → "1y"
+- if none found, default to "30d"
+
+example:
+"show me a 1-day chart for bitcoin" → intent:"chart", asset_type:"crypto", time_period:"1d"
+
 USER QUERY: "{user_input}"
 
 Return ONLY this JSON:
-{{"intent": "intent_name", "asset_name": "name_if_found", "asset_symbol": "SYMBOL_IF_FOUND",  "asset_type": "crypto_or_stock_or_null", "base_currency": "BASE_IF_FOREX", "quote_currency": "QUOTE_IF_FOREX", "time_period": "period_if_chart", "timeframe": null, "date_range": null}}
+{{"intent": "intent_name", "asset_name": "name_if_found", "asset_symbol": "SYMBOL_IF_FOUND",  "asset_type": "crypto_or_stock_or_null", "base_currency": "BASE_IF_FOREX", "quote_currency": "QUOTE_IF_FOREX", "time_period": "period_if_chart", "timeframe": null, "date_range": null, "limit": "Number_or_null"}}
 
 Be precise. If someone asks "what is the price of bitcoin" they want DATA not education. Also tesla ohlc data is stock ohlc not crypto ohlc.
 
@@ -632,6 +652,23 @@ def pattern_fallback_analysis(user_input):
         if re.search(pattern, user_lower):
             time_period = period
             break
+
+    # ---- NEW TOP-MOVERS INTENT ----
+    m = re.search(r'\b(?:top|list|best)\s+(\d{1,2})\b', user_lower)
+    if m:
+        digit = m.group(1)
+        # decide asset_type from the rest of the sentence
+        if 'crypto' in user_lower:
+            at = 'crypto'
+        elif 'stock' in user_lower:
+            at = 'stock'
+        elif 'forex' in user_lower or 'currency' in user_lower:
+            at = 'forex'
+        else:
+            at = 'crypto'          # fallback
+        return create_intent_response("top_market_movers",
+                                    asset_type=at,
+                                    limit=digit)       # <-- real home for the count 
     
     # Chart/visualization requests
     if re.search(r'\b(?:chart|graph|plot|show\s+me|visualize)\b', user_lower):
@@ -762,7 +799,7 @@ def guess_asset_type(symbol, user_input):
     return None
 
 def create_intent_response(intent, asset_symbol=None, asset_name=None, asset_type=None, 
-                         base_currency=None, quote_currency=None, time_period=None, timeframe=None):
+                         base_currency=None, quote_currency=None, time_period=None, timeframe=None, limit=None):
     """Create standardized intent response"""
     return {
         "intent": intent,
@@ -773,5 +810,6 @@ def create_intent_response(intent, asset_symbol=None, asset_name=None, asset_typ
         "quote_currency": quote_currency,
         "time_period": time_period,
         "timeframe": timeframe,
-        "date_range": None
+        "date_range": None,
+        "limit":limit
     }
