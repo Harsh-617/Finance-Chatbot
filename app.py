@@ -30,6 +30,14 @@ from response_handler import (
     format_top_movers_response
 )
 from visualization import create_price_chart
+# RAG Integration
+try:
+    from rag.rag_ingestion import RAGIngestion
+    from rag.rag_retrieval import get_rag_retrieval
+    RAG_AVAILABLE = True
+except ImportError:
+    print("RAG components not available. Running without RAG enhancement.")
+    RAG_AVAILABLE = False
 
 # Load environment variables
 load_dotenv()
@@ -377,6 +385,25 @@ def handle_top_movers_request(analysis):
     return response_handler.format_top_movers_response(data, asset_type, count)
 
 
+def initialize_rag():
+    """Initialize RAG system if available"""
+    if RAG_AVAILABLE:
+        try:
+            # Run ingestion if needed
+            ingestion = RAGIngestion()
+            ingestion.run_ingestion_if_needed()
+            
+            # Test retrieval system
+            rag = get_rag_retrieval()
+            if rag.is_available():
+                print("✅ RAG system initialized successfully")
+                stats = rag.get_collection_stats()
+                print(f"📊 Knowledge base contains {stats['total_documents']} documents")
+            else:
+                print("⚠️ RAG system initialized but no knowledge available")
+        except Exception as e:
+            print(f"❌ RAG initialization failed: {e}")
+
 
 @app.errorhandler(404)
 def not_found(error):
@@ -396,6 +423,9 @@ if __name__ == '__main__':
     if missing_vars:
         print(f"Warning: Missing environment variables: {', '.join(missing_vars)}")
         print("Some features may not work properly.")
+    
+    # Initialize RAG system
+    initialize_rag()
     
     print("Starting Financial Chatbot...")
     print("Available endpoints:")

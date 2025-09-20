@@ -1,0 +1,437 @@
+[
+  {
+    "title": "Dollar-Cost Averaging (DCA)",
+    "category": "Investment Style",
+    "concept": "Dollar-Cost Averaging (DCA) is an investment strategy where an investor allocates a fixed amount of money into an asset at regular intervals, regardless of its price. The purpose is to reduce the impact of market volatility and avoid mistiming the market. By buying consistently, the investor accumulates more shares when prices are low and fewer when prices are high.",
+    "calculation": "Investment Amount ÷ Current Price = Number of Units Purchased. Example: An investor invests $500 per month into Bitcoin. If BTC = $25,000 in January, they buy 0.02 BTC. If BTC = $20,000 in February, they buy 0.025 BTC. Over time, the average purchase cost smooths out.",
+    "parameters": "Key parameters include fixed investment amount, frequency (weekly, monthly), and asset selection (stock, ETF, crypto, etc.).",
+    "use_cases": [
+      "Long-term wealth building without worrying about timing the market.",
+      "Investing in volatile assets like crypto or emerging markets.",
+      "Disciplined savings strategy for retirement accounts."
+    ],
+    "advantages": [
+      "Reduces emotional decision-making.",
+      "Minimizes risk of buying at market peaks.",
+      "Simple and automated approach.",
+      "Encourages consistent investing habits."
+    ],
+    "disadvantages": [
+      "May underperform lump-sum investing in strong bull markets.",
+      "Requires discipline and patience.",
+      "Does not protect against long-term declines."
+    ],
+    "example": "Investors who DCA’d into the S&P 500 during the 2008 financial crisis benefited from consistently lower prices and strong long-term returns when the market recovered.",
+    "variations": [
+      "Value Averaging - adjusting investment amount based on portfolio performance.",
+      "Reverse DCA - gradually selling portions of assets over time instead of buying."
+    ]
+  },
+  {
+    "title": "Value Investing",
+    "category": "Investment Style",
+    "concept": "Value Investing, popularized by Benjamin Graham and Warren Buffett, focuses on buying undervalued securities trading below their intrinsic value. The idea is that markets occasionally misprice stocks, and patient investors can profit when prices eventually reflect true value.",
+    "calculation": "Intrinsic Value = (Future Cash Flows) ÷ (Discount Rate). Example: If a company’s intrinsic value is estimated at $100 per share but trades at $70, a value investor sees a buying opportunity.",
+    "parameters": "Metrics include Price-to-Earnings (P/E), Price-to-Book (P/B), Free Cash Flow, and Margin of Safety.",
+    "use_cases": [
+      "Investing in undervalued large-cap companies.",
+      "Contrarian plays in sectors hit by temporary issues.",
+      "Building long-term portfolios with stable businesses."
+    ],
+    "advantages": [
+      "Focus on fundamentals and real business value.",
+      "Potential for strong returns if markets correct mispricing.",
+      "Encourages patience and discipline."
+    ],
+    "disadvantages": [
+      "Stocks can remain undervalued for years.",
+      "Requires detailed fundamental analysis.",
+      "May underperform during growth-driven bull markets."
+    ],
+    "example": "Warren Buffett’s investment in Coca-Cola during the late 1980s, when the stock was undervalued relative to its brand strength and earnings power, is a classic example of value investing.",
+    "variations": [
+      "Deep Value Investing - buying extremely undervalued distressed companies.",
+      "Relative Value Investing - comparing valuation multiples across peers."
+    ]
+  },
+  {
+    "title": "Growth Investing",
+    "category": "Investment Style",
+    "concept": "Growth Investing focuses on companies with above-average earnings, revenue, or market expansion potential. Investors prioritize future potential over current valuation, often investing in innovative sectors such as technology, biotech, or renewable energy.",
+    "calculation": "Key metrics include EPS growth rate, Revenue CAGR, and PEG ratio (Price/Earnings-to-Growth). Example: A stock with P/E = 30 may still be attractive if its EPS is growing 25% annually.",
+    "parameters": "Focus on revenue growth, market size, product innovation, and competitive advantage.",
+    "use_cases": [
+      "Investing in emerging technologies (AI, EVs, biotech).",
+      "Capturing secular growth trends like cloud computing.",
+      "Building aggressive long-term portfolios."
+    ],
+    "advantages": [
+      "High potential returns during bull markets.",
+      "Exposure to innovative companies with exponential growth potential.",
+      "Can outperform traditional value strategies."
+    ],
+    "disadvantages": [
+      "Often overvalued with high P/E multiples.",
+      "Vulnerable to market corrections and rising interest rates.",
+      "High volatility compared to stable dividend stocks."
+    ],
+    "example": "Amazon in the early 2000s was considered overvalued by value investors, but growth investors who focused on revenue expansion saw massive long-term returns.",
+    "variations": [
+      "Small-cap growth investing.",
+      "Sector-specific growth investing."
+    ]
+  },
+  {
+    "title": "Index Investing",
+    "category": "Investment Style",
+    "concept": "Index Investing is a passive strategy where investors buy index funds or ETFs that replicate major market indices (e.g., S&P 500, NASDAQ). The goal is to match market performance instead of beating it, leveraging diversification and low fees.",
+    "calculation": "Return = Weighted average return of all index components. Example: Investing $10,000 into an S&P 500 ETF mirrors the performance of the 500 companies in the index.",
+    "parameters": "Choice of index, fund expense ratio, and tracking error.",
+    "use_cases": [
+      "Long-term retirement investing.",
+      "Low-cost, low-maintenance portfolios.",
+      "Diversification across sectors and industries."
+    ],
+    "advantages": [
+      "Low cost compared to active management.",
+      "Historically outperforms most active managers over time.",
+      "Simple and transparent."
+    ],
+    "disadvantages": [
+      "No chance to outperform the market.",
+      "Exposed to overall market downturns.",
+      "Limited flexibility (cannot avoid weak sectors)."
+    ],
+    "example": "Jack Bogle’s Vanguard S&P 500 Index Fund, launched in 1976, revolutionized investing by giving retail investors low-cost access to broad markets.",
+    "variations": [
+      "Smart Beta Index Funds.",
+      "Thematic Index Funds."
+    ]
+  },
+  {
+    "title": "Contrarian Investing",
+    "category": "Investment Style",
+    "concept": "Contrarian Investing involves going against prevailing market sentiment. Contrarians buy assets that are out of favor and sell those that are popular, betting that mass psychology often misprices securities.",
+    "calculation": "No fixed formula - relies on market sentiment indicators (VIX, put/call ratio) and valuation metrics. Example: Buying oil stocks when oil prices crash and sentiment is extremely bearish.",
+    "parameters": "Indicators include sentiment surveys, short interest ratios, and valuation spreads.",
+    "use_cases": [
+      "Buying undervalued sectors during crises.",
+      "Shorting overhyped bubbles.",
+      "Timing market reversals based on psychology."
+    ],
+    "advantages": [
+      "Profits from market overreactions.",
+      "Often identifies opportunities missed by the herd.",
+      "Can yield outsized returns in extreme conditions."
+    ],
+    "disadvantages": [
+      "Requires patience - mispricing can persist for years.",
+      "High psychological pressure (going against consensus).",
+      "Risk of catching falling knives in declining sectors."
+    ],
+    "example": "During the 2008 crisis, contrarian investors who bought bank stocks at extreme lows reaped massive gains in the following recovery.",
+    "variations": [
+      "Deep Contrarian - targeting extremely distressed assets.",
+      "Relative Contrarian - opposing consensus within specific sectors."
+    ]
+  },
+  {
+    "title": "Momentum Investing",
+    "category": "Investment Style",
+    "concept": "Momentum Investing is based on the principle that assets that have performed well recently will continue to perform well in the short-to-medium term, and vice versa for underperforming assets. The strategy capitalizes on herd behavior and trend persistence.",
+    "calculation": "Momentum Score = % Change in Price over past 3-12 months. Example: A stock up 40% over the last year may be ranked higher than one up 10%.",
+    "parameters": "Lookback periods (3, 6, 12 months), rebalancing frequency, and universe of stocks considered.",
+    "use_cases": [
+      "Quantitative momentum funds.",
+      "Sector rotation strategies.",
+      "Short-term trading based on relative strength."
+    ],
+    "advantages": [
+      "Backed by strong academic evidence (momentum anomaly).",
+      "Can outperform value and growth in certain cycles.",
+      "Works across asset classes."
+    ],
+    "disadvantages": [
+      "High turnover and transaction costs.",
+      "Vulnerable to sudden trend reversals.",
+      "Requires strict risk management."
+    ],
+    "example": "Momentum funds that bought tech stocks in 2020 significantly outperformed broader markets as trends persisted.",
+    "variations": [
+      "Relative Momentum - across assets.",
+      "Absolute Momentum - buy only if return > 0."
+    ]
+  },
+  {
+    "title": "Dividend Investing",
+    "category": "Investment Style",
+    "concept": "Dividend Investing focuses on stocks that pay regular dividends, providing investors with steady income alongside capital appreciation. Popular among retirees, this style emphasizes stability and cash flow.",
+    "calculation": "Dividend Yield = Annual Dividend per Share ÷ Share Price. Example: A $2 annual dividend on a $40 stock = 5% yield.",
+    "parameters": "Dividend yield, payout ratio, dividend growth rate, and company stability.",
+    "use_cases": [
+      "Generating passive income.",
+      "Long-term wealth building through dividend reinvestment.",
+      "Portfolio stabilization during downturns."
+    ],
+    "advantages": [
+      "Reliable cash flow regardless of market swings.",
+      "Dividend reinvestment compounds returns.",
+      "Often signals company financial strength."
+    ],
+    "disadvantages": [
+      "High yields may indicate financial distress.",
+      "Limited exposure to high-growth sectors.",
+      "Dividend cuts can damage income streams."
+    ],
+    "example": "Investors in Johnson & Johnson have benefited from decades of consistent dividend increases, making it a classic dividend stock.",
+    "variations": [
+      "High-Yield Dividend Investing.",
+      "Dividend Growth Investing."
+    ]
+  },
+  {
+    "title": "ESG / Sustainable Investing",
+    "category": "Investment Style",
+    "concept": "ESG (Environmental, Social, Governance) investing integrates sustainability factors into investment decisions. Investors prioritize companies with strong ethical practices, environmental responsibility, and social governance, aiming for long-term performance aligned with values.",
+    "calculation": "ESG Score = Weighted average of environmental, social, and governance metrics (varies by provider). Example: A fund may exclude fossil fuel companies while favoring renewable energy leaders.",
+    "parameters": "Criteria include carbon footprint, labor practices, board diversity, and compliance history.",
+    "use_cases": [
+      "Aligning investments with ethical values.",
+      "Reducing long-term risk from climate change.",
+      "Attracting institutional capital with ESG mandates."
+    ],
+    "advantages": [
+      "Growing demand and institutional adoption.",
+      "Potentially reduces long-term regulatory risks.",
+      "Appeals to socially conscious investors."
+    ],
+    "disadvantages": [
+      "ESG ratings vary widely by provider.",
+      "May underperform in non-ESG-friendly sectors.",
+      "Risk of greenwashing by companies."
+    ],
+    "example": "The surge in ESG-focused ETFs in the 2020s reflects investor demand for sustainable portfolios.",
+    "variations": [
+      "Negative Screening - excluding certain industries.",
+      "Positive Screening - selecting leaders in ESG performance."
+    ]
+  },
+  {
+    "title": "Sector Rotation",
+    "category": "Investment Style",
+    "concept": "Sector Rotation involves shifting investments between economic sectors based on the business cycle. The strategy assumes that different sectors outperform during different phases such as expansion, peak, recession, and recovery.",
+    "calculation": "Rotation decisions often rely on macroeconomic indicators like GDP growth, interest rates, and inflation. Example: In early recovery, investors rotate into consumer discretionary and industrials.",
+    "parameters": "Economic indicators, market cycle analysis, and relative sector performance.",
+    "use_cases": [
+      "Active portfolio management aligned with economic cycles.",
+      "Tactical asset allocation for ETFs and mutual funds.",
+      "Capitalizing on sector-specific growth opportunities."
+    ],
+    "advantages": [
+      "Adapts to changing economic conditions.",
+      "Enhances returns compared to static allocation.",
+      "Diversifies exposure across multiple industries."
+    ],
+    "disadvantages": [
+      "Requires accurate timing of cycles.",
+      "High transaction costs if over-rotated.",
+      "Difficult to predict sector leaders consistently."
+    ],
+    "example": "During the 2020 pandemic recovery, investors rotated heavily into tech and healthcare sectors, which outperformed other areas.",
+    "variations": [
+      "Top-Down Sector Rotation.",
+      "Bottom-Up Sector Rotation."
+    ]
+  },
+  {
+    "title": "Buy and Hold",
+    "category": "Investment Style",
+    "concept": "Buy and Hold is a long-term strategy where investors purchase securities and hold them for years or decades, regardless of market volatility. The philosophy is that markets rise over time, and patience leads to compounded returns.",
+    "calculation": "Return = (Ending Value - Initial Investment) ÷ Initial Investment × 100%. Example: $10,000 invested in the S&P 500 in 1980, held until 2020, grew exponentially despite multiple recessions.",
+    "parameters": "Asset choice, holding period, reinvestment policy.",
+    "use_cases": [
+      "Retirement accounts and long-term wealth building.",
+      "Investors who want minimal trading activity.",
+      "Capturing market growth across cycles."
+    ],
+    "advantages": [
+      "Low costs due to minimal trading.",
+      "Harnesses compound growth.",
+      "Avoids emotional short-term decisions."
+    ],
+    "disadvantages": [
+      "Exposure to major downturns without protection.",
+      "May miss opportunities from active rebalancing.",
+      "Requires patience and long-term perspective."
+    ],
+    "example": "Investors who held the S&P 500 through the dot-com crash and 2008 crisis still enjoyed significant gains by 2020.",
+    "variations": [
+      "Buy and Hold with Rebalancing.",
+      "Passive Index Buy and Hold."
+    ]
+  },
+  {
+    "title": "Income Investing",
+    "category": "Investment Style",
+    "concept": "Income Investing focuses on generating steady cash flow from assets such as bonds, REITs, preferred stocks, and dividend-paying companies. The goal is to create reliable income streams rather than capital appreciation.",
+    "calculation": "Yield = Annual Income ÷ Investment Value. Example: A $1,000 bond paying $50 annually = 5% yield.",
+    "parameters": "Focus on yield, payout stability, credit risk, and maturity dates.",
+    "use_cases": [
+      "Retirees needing predictable cash flow.",
+      "Conservative portfolios focusing on income.",
+      "Diversification with fixed income and real estate."
+    ],
+    "advantages": [
+      "Reliable and predictable returns.",
+      "Lower volatility than growth stocks.",
+      "Fits well in retirement strategies."
+    ],
+    "disadvantages": [
+      "Lower long-term returns than growth stocks.",
+      "Interest rate risk affects bond prices.",
+      "Inflation erodes purchasing power of fixed income."
+    ],
+    "example": "REITs became popular income investments in the 2000s, offering high yields from real estate portfolios.",
+    "variations": [
+      "Bond Laddering.",
+      "High-Dividend REIT Investing."
+    ]
+  },
+  {
+    "title": "Event-Driven Hedge Fund Strategy",
+    "category": "Investment Style",
+    "concept": "Event-Driven investing focuses on exploiting mispricings caused by corporate events such as mergers, acquisitions, bankruptcies, or restructurings. Hedge funds use this strategy to generate alpha from market inefficiencies.",
+    "calculation": "Example: In a merger arbitrage, if Company A offers to buy Company B for $50, but B trades at $48, investors buy B shares, betting the spread closes when the deal finalizes.",
+    "parameters": "Corporate event calendars, deal spreads, regulatory approvals.",
+    "use_cases": [
+      "Merger arbitrage.",
+      "Distressed debt investing.",
+      "Spin-offs and restructuring plays."
+    ],
+    "advantages": [
+      "Profits from specific, identifiable catalysts.",
+      "Less dependent on overall market direction.",
+      "Exploits inefficiencies in niche situations."
+    ],
+    "disadvantages": [
+      "Complex and requires deep research.",
+      "Event risks such as deals collapsing.",
+      "Limited opportunities compared to broad market investing."
+    ],
+    "example": "Merger arbitrage funds profited heavily during the AOL–Time Warner deal in 2000.",
+    "variations": [
+      "Merger Arbitrage.",
+      "Distressed Securities Investing."
+    ]
+  },
+  {
+    "title": "Global Macro Hedge Fund Strategy",
+    "category": "Investment Style",
+    "concept": "Global Macro investing is a hedge fund strategy that seeks to profit from macroeconomic trends and geopolitical events by trading across asset classes such as equities, bonds, currencies, and commodities.",
+    "calculation": "Positions are based on macro forecasts - for example, betting on interest rate hikes by shorting bonds. Example: A fund might short the yen while buying U.S. Treasuries in anticipation of policy divergence.",
+    "parameters": "Global economic indicators, central bank policy, geopolitical analysis.",
+    "use_cases": [
+      "Currency speculation.",
+      "Interest rate bets.",
+      "Commodities trades tied to geopolitical events."
+    ],
+    "advantages": [
+      "Highly flexible across asset classes.",
+      "Potential for massive gains in macro shifts.",
+      "Diversifies traditional equity-heavy portfolios."
+    ],
+    "disadvantages": [
+      "High risk and volatility.",
+      "Requires deep macroeconomic expertise.",
+      "Can underperform during stable markets."
+    ],
+    "example": "George Soros's famous bet against the British pound in 1992 (Black Wednesday) is a classic global macro trade.",
+    "variations": [
+      "Discretionary Macro - human decision making based on analysis.",
+      "Systematic Macro - algorithmic strategies driven by quantitative models."
+    ]
+  }  ,
+  {
+    "title": "Factor Investing",
+    "category": "Investment Style",
+    "concept": "Factor Investing involves targeting specific drivers of returns (factors) such as value, size, momentum, quality, and volatility. Instead of buying broad indices, investors tilt portfolios toward factors that historically provide risk-adjusted outperformance.",
+    "calculation": "Performance Attribution = Exposure * Factor Return. Example: A portfolio overweight in 'value' stocks gains if the value factor outperforms the market.",
+    "parameters": "Common factors: Value (low P/E), Size (small-cap premium), Momentum (past winners), Quality (high ROE), Low Volatility.",
+    "use_cases": [
+      "Smart beta ETFs tilted toward factors.",
+      "Institutional portfolios seeking diversification.",
+      "Risk-premia harvesting across asset classes."
+    ],
+    "advantages": [
+      "Evidence-based with strong academic support.",
+      "Customizable exposure to chosen factors.",
+      "Diversifies beyond traditional index investing."
+    ],
+    "disadvantages": [
+      "Factors can underperform for long stretches.",
+      "Data mining risk if factors are poorly defined.",
+      "Requires monitoring and rebalancing."
+    ],
+    "example": "MSCI Factor Indices and iShares Smart Beta ETFs allow investors to capture factor premiums systematically.",
+    "variations": [
+      "Single-Factor Investing.",
+      "Multi-Factor Blended Portfolios."
+    ]
+  },
+  {
+    "title": "Quantitative Investing",
+    "category": "Investment Style",
+    "concept": "Quantitative Investing uses mathematical models, algorithms, and statistical analysis to identify opportunities. Decisions are data-driven rather than based on human judgment, often involving big data, machine learning, and backtesting.",
+    "calculation": "Strategies can include statistical arbitrage, factor modeling, or AI-driven signals. Example: A quant model may screen thousands of stocks for specific anomalies and automatically rebalance.",
+    "parameters": "Inputs include price data, fundamental metrics, sentiment data, and macroeconomic indicators.",
+    "use_cases": [
+      "Algorithmic trading in equities and futures.",
+      "Multi-asset allocation with systematic rules.",
+      "High-frequency trading strategies."
+    ],
+    "advantages": [
+      "Removes human emotion and bias.",
+      "Scalable to large datasets and markets.",
+      "Can identify hidden patterns not visible to humans."
+    ],
+    "disadvantages": [
+      "Requires advanced technical infrastructure.",
+      "Model risk from overfitting or bad assumptions.",
+      "Performance depends on data quality."
+    ],
+    "example": "Renaissance Technologies' Medallion Fund is one of the most successful quantitative hedge funds, leveraging advanced algorithms for decades.",
+    "variations": [
+      "High-Frequency Trading (HFT).",
+      "Statistical Arbitrage.",
+      "Machine Learning-Driven Quant Strategies."
+    ]
+  },
+  {
+    "title": "Swing / Position Investing",
+    "category": "Investment Style",
+    "concept": "Swing or Position Investing bridges short-term trading and long-term investing. Investors hold positions for days to weeks (swing) or weeks to months (position), aiming to profit from medium-term market moves.",
+    "calculation": "Return = (Sell Price - Buy Price) ÷ Buy Price. Example: Buying a stock at $50 and selling two weeks later at $60 yields a 20% gain.",
+    "parameters": "Time horizon (days to months), entry/exit signals (technical and fundamental), and risk management (stop-loss, position sizing).",
+    "use_cases": [
+      "Capturing medium-term market trends.",
+      "Trading around earnings reports or catalysts.",
+      "Balancing between active trading and long-term holding."
+    ],
+    "advantages": [
+      "Less stressful than day trading.",
+      "Can capture significant price moves without constant monitoring.",
+      "Flexibility across technical and fundamental signals."
+    ],
+    "disadvantages": [
+      "Still requires timing and discipline.",
+      "Higher risk than buy-and-hold investing.",
+      "Exposed to overnight/weekend gaps."
+    ],
+    "example": "A swing investor might buy Apple stock ahead of a new iPhone launch and sell after the product announcement rally.",
+    "variations": [
+      "Swing Trading (days/weeks).",
+      "Position Trading (weeks/months)."
+    ]
+  }
+]
+

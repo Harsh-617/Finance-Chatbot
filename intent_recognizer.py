@@ -27,97 +27,98 @@ def llm_intent_analysis(user_input, groq_api_key):
     
     prompt = f"""You are a financial intent classifier. Analyze the user query and return ONLY a JSON object.
 
-     AVAILABLE INTENTS:
+ AVAILABLE INTENTS:
 
-     📚 EDUCATIONAL/EXPLANATORY:
-     - answer_financial_query: When user wants to understand, learn about, or get explanations of financial concepts, companies, assets, or how things work
+ 📚 EDUCATIONAL/EXPLANATORY:
+ - answer_financial_query: When user wants to understand, learn about, or get explanations of financial concepts, companies, assets, or how things work
 
-     💬 CONVERSATION:
-     - greeting_conversation: Basic greetings, small talk, casual conversation
+ 💬 CONVERSATION:
+ - greeting_conversation: Basic greetings, small talk, casual conversation
 
-     📊 VISUALIZATION:
-     - chart: When user wants to see price charts, graphs, or visual data for stocks/crypto over time periods
+ 📊 VISUALIZATION:
+ - chart: When user wants to see price charts, graphs, or visual data for stocks/crypto over time periods
 
-     🪙 CRYPTOCURRENCY DATA:
-     - crypto_price_overview: Current price, market cap, volume, price changes
-     - crypto_supply_info: Supply metrics (circulating, total, max supply)
-     - crypto_ath_atl: All-time high/low prices and dates
-     - crypto_ohlc: Open/High/Low/Close trading data
-     - crypto_exchange_info: Exchange listings and trading information
-     - crypto_metadata: Technical details, algorithms, blockchain specifications
+ 🪙 CRYPTOCURRENCY DATA:
+ - crypto_price_overview: Current price, market cap, volume, price changes
+ - crypto_supply_info: Supply metrics (circulating, total, max supply)
+ - crypto_ath_atl: All-time high/low prices and dates
+ - crypto_ohlc: Open/High/Low/Close trading data
+ - crypto_exchange_info: Exchange listings and trading information
+ - crypto_metadata: Technical details, algorithms, blockchain specifications
 
-     📈 STOCK DATA:
-     - stock_price_overview: Current stock price, daily changes, trading info
-     - stock_fundamentals: Financial ratios, market cap, P/E, financial health
-     - stock_ohlc: Open/High/Low/Close trading data
-     - stock_earnings: Quarterly/annual earnings reports and results
-     - stock_analyst_ratings: Buy/sell recommendations from analysts
-     - stock_insider_ownership: Insider trading activities
-     - stock_technicals: Technical indicators like RSI, SMA
+ 📈 STOCK DATA:
+ - stock_price_overview: Current stock price, daily changes, trading info
+ - stock_fundamentals: Financial ratios, market cap, P/E, financial health
+ - stock_ohlc: Open/High/Low/Close trading data
+ - stock_earnings: Quarterly/annual earnings reports and results
+ - stock_analyst_ratings: Buy/sell recommendations from analysts
+ - stock_insider_ownership: Insider trading activities
+ - stock_technicals: Technical indicators like RSI, SMA
 
-     💱 FOREX DATA:
-     - forex_exchange_rate: Currency conversion rates
-     - forex_ohlc: Currency pair OHLC data
-     - forex_historical_rate: Historical exchange rates
-     - forex_economic_data: Economic events affecting currencies
+ 💱 FOREX DATA:
+ - forex_exchange_rate: Currency conversion rates
+ - forex_ohlc: Currency pair OHLC data
+ - forex_historical_rate: Historical exchange rates
+ - forex_economic_data: Economic events affecting currencies
 
-     📊 MARKET OVERVIEW:
-     - top_market_movers: When user asks for "top 5/10/20 cryptos/stocks/forex", "best performers", "biggest gainers", "top market cap", "list top assets"
+ 📊 MARKET OVERVIEW:
+ - top_market_movers: When user asks for "top 5/10/20 cryptos/stocks/forex", "best performers", "biggest gainers", "top market cap", "list top assets"
 
-     for the top_market_movers intent, extract the limit, for example if user asks for top 5 cryptos, then extract the '5' into the limit field.
+ for the top_market_movers intent, extract the limit, for example if user asks for top 5 cryptos, then extract the '5' into the limit field.
 
-carefully read each and every word of the user query and then decide which intent best suites the query.
-for example, if there are words like what, how, explain, etc then most probably it is related to the intent answer_financial_query.
-if price or rate or other similar words like this then most probably its related to the other crypto, stocks, or forex intents. 
+ carefully read each and every word of the user query and then decide which intent best suites the query.
+ for example, if there are words like what, how, explain, etc then most probably it is related to the intent answer_financial_query.
+ if price or rate or other similar words like this then most probably its related to the other crypto, stocks, or forex intents. 
 
-INTENT RULES:
-1. DATA REQUESTS (user wants current/specific numbers):
-   - "bitcoin price", "price of bitcoin" → crypto_price_overview
-   - "apple stock price", "aapl price" → stock_price_overview  
-   - "tesla earnings", "aapl quarterly results" → stock_earnings
-   - "apple fundamentals", "msft pe ratio" → stock_fundamentals
-   - "bitcoin ohlc" → crypto_ohlc
-   - "tesla ohlc data" → stock_ohlc
-   - "usd to eur", "dollar euro rate" → forex_exchange_rate
-   - "top 10 cryptocurrencies" → top_market_movers (crypto)
-   - "top 5 stocks" → top_market_movers (stock)
-   - "best forex pairs", "top currencies" → top_market_movers (forex)
+ INTENT RULES:
+ 1. DATA REQUESTS (user wants current/specific numbers):
+    - "bitcoin price", "price of bitcoin" → crypto_price_overview
+    - "apple stock price", "aapl price" → stock_price_overview  
+    - "tesla earnings", "aapl quarterly results" → stock_earnings
+    - "apple fundamentals", "msft pe ratio" → stock_fundamentals
+    - "bitcoin ohlc" → crypto_ohlc
+    - "tesla ohlc data" → stock_ohlc
+    - "usd to eur", "dollar euro rate" → forex_exchange_rate
+    - "top 10 cryptocurrencies" → top_market_movers (crypto)
+    - "top 5 stocks" → top_market_movers (stock)
+    - "best forex pairs", "top currencies" → top_market_movers (forex)
 
-2. VISUAL REQUESTS (user wants charts/graphs):
-   - "bitcoin chart", "show me apple graph" → chart
+ 2. VISUAL REQUESTS (user wants charts/graphs):
+    - "bitcoin chart", "show me apple graph" → chart
 
-3. EDUCATIONAL (user wants to learn/understand):
-   - "what is bitcoin", "explain blockchain", "whats btc" → answer_financial_query
+ 3. EDUCATIONAL (user wants to learn/understand):
+    - "what is bitcoin", "explain blockchain", "whats btc" → answer_financial_query
 
-4. CONVERSATION:
-   - "hello", "how are you" → greeting_conversation
+ 4. CONVERSATION:
+    - "hello", "how are you" → greeting_conversation
 
-ENTITY EXTRACTION:
-- Extract ANY symbol/name mentioned (BTC, Bitcoin, AAPL, Apple, Tesla, EUR, USD, etc.)
-- Determine if it's crypto, stock, or currency based on context
-- For time periods: extract "7d", "30d", "1 week", "last month" etc.
+ ENTITY EXTRACTION:
+ - Extract ANY symbol/name mentioned (BTC, Bitcoin, AAPL, Apple, Tesla, EUR, USD, etc.)
+ - Determine if it's crypto, stock, or currency based on context
+ - For time periods: extract "7d", "30d", "1 week", "last month" etc.
+ - CRITICAL: if the user message literally contains a ticker symbol (e.g. CJET, YAAS, AAPL, BTC), copy that exact ticker into asset_symbol and the corresponding name into asset_name; do NOT invent or swap to a different symbol.
 
-TIME-PERIOD RULE FOR CHARTS:
-- always return one of these exact strings: 1d, 7d, 30d, 90d, 1y
-- map "today|1 day|daily" → "1d"
-- map "last week|7 days|1 week" → "7d"
-- map "last month|30 days|1 month" → "30d"
-- map "last 90 days|3 months" → "90d"
-- map "last year|1 year|12 months" → "1y"
-- if none found, default to "30d"
+ TIME-PERIOD RULE FOR CHARTS:
+ - always return one of these exact strings: 1d, 7d, 30d, 90d, 1y
+ - map "today|1 day|daily" → "1d"
+ - map "last week|7 days|1 week" → "7d"
+ - map "last month|30 days|1 month" → "30d"
+ - map "last 90 days|3 months" → "90d"
+ - map "last year|1 year|12 months" → "1y"
+ - if none found, default to "30d"
 
-example:
-"show me a 1-day chart for bitcoin" → intent:"chart", asset_type:"crypto", time_period:"1d"
+ example:
+ "show me a 1-day chart for bitcoin" → intent:"chart", asset_type:"crypto", time_period:"1d"
 
-USER QUERY: "{user_input}"
+ USER QUERY: "{user_input}"
 
-Return ONLY this JSON:
-{{"intent": "intent_name", "asset_name": "name_if_found", "asset_symbol": "SYMBOL_IF_FOUND",  "asset_type": "crypto_or_stock_or_null", "base_currency": "BASE_IF_FOREX", "quote_currency": "QUOTE_IF_FOREX", "time_period": "period_if_chart", "timeframe": null, "date_range": null, "limit": "Number_or_null"}}
+ Return ONLY this JSON:
+ {{"intent": "intent_name", "asset_name": "name_if_found", "asset_symbol": "SYMBOL_IF_FOUND",  "asset_type": "crypto_or_stock_or_null", "base_currency": "BASE_IF_FOREX", "quote_currency": "QUOTE_IF_FOREX", "time_period": "period_if_chart", "timeframe": null, "date_range": null, "limit": "Number_or_null"}}
 
-Be precise. If someone asks "what is the price of bitcoin" they want DATA not education. Also tesla ohlc data is stock ohlc not crypto ohlc.
+ Be precise. If someone asks "what is the price of bitcoin" they want DATA not education. Also tesla ohlc data is stock ohlc not crypto ohlc.
 
-Also extract timeframe for OHLC data for both crypto and stocks.
-for example: if user asks daily ohlc for btc, then here the timeframe is daily."""
+ Also extract timeframe for OHLC data for both crypto and stocks.
+ for example: if user asks daily ohlc for btc, then here the timeframe is daily."""
 
     payload = {
         "model": "llama-3.1-8b-instant",

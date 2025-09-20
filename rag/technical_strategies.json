@@ -1,0 +1,427 @@
+[
+  {
+    "title": "Relative Strength Index (RSI)",
+    "category": "Technical Strategy",
+    "concept": "The Relative Strength Index (RSI) is a momentum oscillator developed by J. Welles Wilder Jr. in 1978. It measures the velocity and magnitude of directional price movements and provides traders with a numerical value between 0 and 100. RSI helps evaluate whether an asset is overbought or oversold, thereby identifying potential reversal points or trend continuations. It is one of the most widely used technical indicators in stock, forex, and cryptocurrency markets.",
+    "calculation": "RSI = 100 - (100 / (1 + RS)), where RS (Relative Strength) = Average Gain over n periods / Average Loss over n periods. The default period is 14. Example: If an asset gained an average of $1 over 10 days and lost an average of $0.50, RS = 1 / 0.5 = 2, RSI = 100 - (100 / (1+2)) = 66.7.",
+    "parameters": "Default setting is 14 periods, but traders often adjust to 9 for short-term trading or 21 for longer-term analysis. Thresholds are commonly 70 (overbought) and 30 (oversold), though some traders use 80/20 for more extreme signals.",
+    "use_cases": [
+      "Identifying overbought (>70) and oversold (<30) conditions.",
+      "Spotting bullish or bearish divergences between RSI and price action.",
+      "Confirming trends: RSI staying above 50 in an uptrend or below 50 in a downtrend.",
+      "Detecting failure swings: when RSI breaks a previous high/low independently of price."
+    ],
+    "advantages": [
+      "Easy to interpret with standardized thresholds.",
+      "Provides early warning signals through divergences.",
+      "Adaptable across multiple timeframes and assets.",
+      "Useful for both trend confirmation and counter-trend signals."
+    ],
+    "disadvantages": [
+      "Produces false signals in strong trending markets (e.g., RSI remains overbought in a bull run).",
+      "Lagging in nature — based on past price data.",
+      "Heavily dependent on parameter choice (14, 9, or 21 can change signals).",
+      "Divergences are not always reliable in volatile markets."
+    ],
+    "example": "During the COVID-19 crash in March 2020, RSI on the S&P 500 dropped below 20, indicating extreme oversold conditions. Within weeks, the market staged a strong rebound, validating RSI as a signal of exhausted selling pressure.",
+    "variations": [
+      "Stochastic RSI (StochRSI): An indicator of an indicator, applying the stochastic formula to RSI values for more sensitivity.",
+      "RSI Divergence Strategy: Focused on mismatches between RSI and price trends.",
+      "RSI Range Shift: Observing RSI behavior in trending vs. ranging markets (e.g., RSI staying 40-80 in bull markets instead of the usual 30-70)."
+    ]
+  },
+  {
+    "title": "Bollinger Bands",
+    "category": "Technical Strategy",
+    "concept": "Bollinger Bands were developed by John Bollinger in the 1980s to measure market volatility and identify overbought/oversold conditions. They consist of three lines: a simple moving average (middle band), and two bands plotted at standard deviations above and below the SMA. The bands expand during high volatility and contract during low volatility, helping traders spot breakouts and trend continuations.",
+    "calculation": "Upper Band = SMA(n) + (k * Standard Deviation), Lower Band = SMA(n) - (k * Standard Deviation). Typically n = 20, k = 2. Example: If the 20-day SMA is 100 and the standard deviation is 5, the upper band = 100 + (2*5) = 110, lower band = 100 - (2*5) = 90.",
+    "parameters": "Common settings are 20-period SMA with 2 standard deviations. Traders may adjust the period (10, 50) or standard deviation (1.5, 3) based on volatility and timeframes.",
+    "use_cases": [
+      "Detecting volatility squeezes — when bands tighten, indicating a potential breakout.",
+      "Identifying overbought conditions when price touches or exceeds the upper band.",
+      "Spotting oversold conditions when price touches or drops below the lower band.",
+      "Using bands for dynamic support and resistance zones."
+    ],
+    "advantages": [
+      "Adaptive to market volatility.",
+      "Useful for breakout and mean-reversion strategies.",
+      "Widely recognized and trusted by traders across asset classes.",
+      "Can be combined with other indicators for stronger signals."
+    ],
+    "disadvantages": [
+      "Does not predict trend direction — only volatility.",
+      "False signals are common in ranging markets.",
+      "Band penetration is not always an immediate reversal sign.",
+      "Performance heavily depends on parameter tuning."
+    ],
+    "example": "In April 2021, Bitcoin's price experienced a volatility squeeze as Bollinger Bands contracted significantly. The breakout above the upper band led to a rapid price surge to new highs.",
+    "variations": [
+      "Bollinger Bandwidth: Measures the percentage difference between upper and lower bands.",
+      "Bollinger %B: Shows where the price is relative to the bands (0 = lower, 1 = upper).",
+      "Double Bollinger Bands: Using two sets of bands (1 and 2 standard deviations) to identify zones."
+    ]
+  },
+  {
+    "title": "Moving Average Crossover (Golden Cross / Death Cross)",
+    "category": "Technical Strategy",
+    "concept": "A moving average crossover strategy compares two different moving averages (usually short-term vs. long-term) to identify potential trend reversals. The most famous signals are the Golden Cross (bullish) when a short-term MA crosses above a long-term MA, and the Death Cross (bearish) when a short-term MA crosses below a long-term MA.",
+    "calculation": "Golden Cross = Short-Term MA (50-day) crosses above Long-Term MA (200-day). Death Cross = Short-Term MA (50-day) crosses below Long-Term MA (200-day). Example: If the 50-day MA of AAPL rises to 160 while the 200-day MA is 150, the crossover signals a bullish trend.",
+    "parameters": "Common pairs: 50-day vs 200-day for long-term, 10-day vs 30-day for short-term. Exponential MAs (EMA) can also be used for faster signals.",
+    "use_cases": [
+      "Identifying long-term bullish/bearish trend reversals.",
+      "Providing entry/exit signals for swing traders and investors.",
+      "Confirming broader market momentum.",
+      "Used in algorithmic trend-following systems."
+    ],
+    "advantages": [
+      "Simple and easy to understand.",
+      "Filters out short-term noise compared to raw price action.",
+      "Works well in strong trending markets.",
+      "Widely followed, making signals self-reinforcing."
+    ],
+    "disadvantages": [
+      "Lags behind price — by the time a crossover occurs, much of the move may be over.",
+      "Whipsaws in sideways markets can lead to losses.",
+      "Not suitable for high-volatility, choppy conditions.",
+      "Requires confirmation from other indicators for reliability."
+    ],
+    "example": "In April 2020, after the COVID-19 market crash, the S&P 500 triggered a Golden Cross as the 50-day MA crossed above the 200-day MA, signaling the start of a strong bullish recovery.",
+    "variations": [
+      "Triple Moving Average Strategy: Uses 3 MAs for fewer false signals.",
+      "EMA Crossovers: Faster signals compared to simple MAs.",
+      "Adaptive MAs: Adjusting moving averages based on volatility."
+    ]
+  },
+  {
+    "title": "MACD (Moving Average Convergence Divergence)",
+    "category": "Technical Strategy",
+    "concept": "MACD, developed by Gerald Appel in the late 1970s, is a trend-following momentum indicator that shows the relationship between two moving averages of an asset's price. It consists of the MACD line, Signal line, and Histogram. Traders use it to identify momentum shifts, trend strength, and potential buy/sell signals.",
+    "calculation": "MACD Line = EMA(12) - EMA(26), Signal Line = EMA(9) of MACD Line, Histogram = MACD Line - Signal Line. Example: If EMA(12) = 105 and EMA(26) = 100, MACD = 5. If Signal Line = 3, Histogram = 2.",
+    "parameters": "Default settings: 12, 26, and 9 periods. Traders may shorten the timeframes for intraday trading or lengthen them for long-term analysis.",
+    "use_cases": [
+      "Crossover strategy: Buy when MACD line crosses above signal line, sell when it crosses below.",
+      "Spotting bullish/bearish divergences between MACD and price action.",
+      "Identifying momentum strength through histogram expansion.",
+      "Confirming broader market trends."
+    ],
+    "advantages": [
+      "Combines trend-following and momentum in one indicator.",
+      "Flexible across timeframes and assets.",
+      "Histogram provides visual clarity on momentum shifts.",
+      "Popular among both retail and institutional traders."
+    ],
+    "disadvantages": [
+      "Lagging indicator — based on past price averages.",
+      "Generates false signals in sideways/ranging markets.",
+      "Parameter sensitivity may cause over-optimization.",
+      "Requires confirmation from other tools for accuracy."
+    ],
+    "example": "In early 2019, Tesla's MACD line crossed above the signal line while the histogram expanded, signaling bullish momentum that preceded a major rally.",
+    "variations": [
+      "Zero-Line Crossovers: Bullish when MACD crosses above zero, bearish when below.",
+      "MACD Histogram Strategy: Focus solely on histogram expansion/contraction.",
+      "Adaptive MACD: Adjusting EMAs based on volatility."
+    ]
+  },
+  {
+    "title": "Fibonacci Retracement",
+    "category": "Technical Strategy",
+    "concept": "Fibonacci retracement is a tool that uses horizontal lines to identify potential support and resistance levels based on Fibonacci ratios. Traders apply it to significant price swings to anticipate areas where the market may reverse or consolidate. The key Fibonacci levels are derived from the golden ratio (0.618) and related percentages.",
+    "calculation": "Fibonacci levels = Price Range * Ratio. Key levels: 23.6%, 38.2%, 50%, 61.8%, 78.6%. Example: If a stock rises from $100 to $200, retracement levels are 176.4 (23.6%), 161.8 (38.2%), 150 (50%), 138.2 (61.8%), and 121.4 (78.6%).",
+    "parameters": "No fixed parameters, as levels are drawn between a high and low point. Traders often combine with other indicators like RSI or MACD for confirmation.",
+    "use_cases": [
+      "Identifying potential support/resistance zones during pullbacks.",
+      "Spotting retracement levels for entry after a strong trend.",
+      "Combining with extensions to project future price targets.",
+      "Used in conjunction with Elliott Wave Theory."
+    ],
+    "advantages": [
+      "Simple visual tool widely used by traders.",
+      "Works across markets and timeframes.",
+      "Helps identify high-probability reversal areas.",
+      "Often self-fulfilling as many traders watch the same levels."
+    ],
+    "disadvantages": [
+      "Highly subjective — depends on chosen swing points.",
+      "Not a standalone strategy; needs confirmation.",
+      "Levels may act as noise in volatile markets.",
+      "Does not predict timing — only potential price zones."
+    ],
+    "example": "In 2020, during the post-COVID market recovery, the NASDAQ retraced to the 61.8% Fibonacci level before resuming its bullish uptrend.",
+    "variations": [
+      "Fibonacci Extensions: Used to project future price targets beyond the swing high/low.",
+      "Fibonacci Clusters: Multiple retracements from different swings overlapping.",
+      "Fibonacci Fans/Arcs: Alternative geometric applications of Fibonacci ratios."
+    ]
+  },
+  {
+    "title": "Stochastic Oscillator",
+    "category": "Technical Strategy",
+    "concept": "The Stochastic Oscillator, developed by George Lane in the 1950s, is a momentum indicator that compares a security's closing price to its price range over a specified period. It ranges from 0 to 100 and helps identify overbought and oversold levels, as well as potential trend reversals.",
+    "calculation": "%K = (Current Close - Lowest Low) / (Highest High - Lowest Low) * 100. %D = 3-period moving average of %K. Example: If Close = 80, Lowest Low = 70, Highest High = 90, %K = (80-70)/(90-70)*100 = 50.",
+    "parameters": "Default settings are 14 periods for %K and 3 for %D. Thresholds are typically 80 (overbought) and 20 (oversold).",
+    "use_cases": [
+      "Identify overbought (>80) and oversold (<20) conditions.",
+      "Spot bullish/bearish divergences between oscillator and price.",
+      "Generate buy/sell signals when %K crosses %D."
+    ],
+    "advantages": [
+      "Simple to interpret with clear thresholds.",
+      "Effective for short-term trading in ranging markets.",
+      "Highlights divergences that may precede reversals."
+    ],
+    "disadvantages": [
+      "Generates false signals in trending markets.",
+      "Heavily dependent on parameter settings.",
+      "Can remain overbought/oversold for long periods in strong trends."
+    ],
+    "example": "During the 2008 financial crisis, the S&P 500's Stochastic Oscillator dipped below 20 multiple times, signaling oversold conditions before temporary rallies.",
+    "variations": [
+      "Slow Stochastic: Smoother signals using additional averages.",
+      "Fast Stochastic: More sensitive but produces more noise."
+    ]
+  },
+  {
+    "title": "Ichimoku Cloud",
+    "category": "Technical Strategy",
+    "concept": "The Ichimoku Cloud, created by Goichi Hosoda in the 1960s, is a comprehensive indicator that provides support/resistance levels, trend direction, and momentum in one view. It consists of five lines and a 'cloud' area that visually represents equilibrium zones.",
+    "calculation": "Key components: Tenkan-sen = (9-period high + low)/2, Kijun-sen = (26-period high + low)/2, Senkou Span A = (Tenkan-sen + Kijun-sen)/2 (plotted 26 periods ahead), Senkou Span B = (52-period high + low)/2 (plotted 26 periods ahead), Chikou Span = Current close (plotted 26 periods back).",
+    "parameters": "Default settings: 9, 26, 52. Traders sometimes adjust for faster signals, e.g., 7, 22, 44.",
+    "use_cases": [
+      "Trend identification: Price above the cloud indicates uptrend, below indicates downtrend.",
+      "Cloud as dynamic support/resistance.",
+      "Bullish/bearish signals from crossovers (Tenkan-sen vs Kijun-sen)."
+    ],
+    "advantages": [
+      "Comprehensive: combines trend, momentum, and support/resistance.",
+      "Visually intuitive once mastered.",
+      "Useful across multiple timeframes."
+    ],
+    "disadvantages": [
+      "Complex for beginners.",
+      "Lagging signals due to averaging.",
+      "Less effective in highly volatile markets."
+    ],
+    "example": "In 2016, Bitcoin broke above the Ichimoku Cloud after months of consolidation, signaling the start of a strong uptrend that continued into 2017.",
+    "variations": [
+      "Ichimoku Breakout Strategy: Focus on price exiting the cloud.",
+      "Kumo Twist: When Span A crosses Span B, signaling future trend change."
+    ]
+  },
+  {
+    "title": "Parabolic SAR",
+    "category": "Technical Strategy",
+    "concept": "The Parabolic Stop and Reverse (SAR), developed by J. Welles Wilder Jr., is a trend-following indicator that helps identify potential reversals by plotting dots above or below the price chart. It is widely used for setting trailing stop-loss levels.",
+    "calculation": "SAR = Prior SAR + AF * (EP - Prior SAR). AF = Acceleration Factor (default 0.02, increases by 0.02 up to 0.20). EP = Extreme Price (highest high or lowest low in the trend).",
+    "parameters": "Default AF = 0.02, max = 0.20. Smaller AFs = slower signals, larger AFs = faster but noisier signals.",
+    "use_cases": [
+      "Identify trend direction: dots below price = uptrend, above = downtrend.",
+      "Set dynamic stop-loss levels that trail price.",
+      "Spot potential reversals when SAR switches sides."
+    ],
+    "advantages": [
+      "Provides clear, objective signals.",
+      "Excellent for trailing stop placement.",
+      "Useful in trending markets."
+    ],
+    "disadvantages": [
+      "Whipsaws in sideways markets.",
+      "Not suitable for choppy conditions.",
+      "Performance depends on AF tuning."
+    ],
+    "example": "In 2021, traders used Parabolic SAR to ride Tesla's strong uptrend, adjusting stops as the dots trailed below price.",
+    "variations": [
+      "Modified SAR: Adjusted AF for specific markets.",
+      "Combination with ADX for trend strength confirmation."
+    ]
+  },
+  {
+    "title": "Average True Range (ATR)",
+    "category": "Technical Strategy",
+    "concept": "The Average True Range (ATR), developed by J. Welles Wilder Jr., measures market volatility by averaging the true range of price movements over a given period. It does not indicate direction but helps assess the degree of price fluctuations.",
+    "calculation": "True Range = max(High - Low, |High - Previous Close|, |Low - Previous Close|). ATR = Moving Average of True Range over n periods. Example: If the last 14 true ranges average 2.5, ATR = 2.5.",
+    "parameters": "Default setting is 14 periods. Shorter periods = more responsive, longer = smoother.",
+    "use_cases": [
+      "Setting stop-loss levels based on volatility.",
+      "Identifying periods of high/low volatility.",
+      "Position sizing: adjusting trade size relative to ATR."
+    ],
+    "advantages": [
+      "Versatile measure of volatility.",
+      "Works across assets and timeframes.",
+      "Essential for risk management."
+    ],
+    "disadvantages": [
+      "Does not indicate direction.",
+      "Lagging — averages past data.",
+      "Values vary between assets (not standardized)."
+    ],
+    "example": "During the 2020 COVID crash, ATR on the S&P 500 spiked to extreme levels, reflecting high volatility and prompting wider stop-loss placement.",
+    "variations": [
+      "ATR Trailing Stop: Dynamic stops based on multiples of ATR.",
+      "Normalized ATR: ATR expressed as a percentage of price."
+    ]
+  },
+  {
+    "title": "VWAP (Volume Weighted Average Price)",
+    "category": "Technical Strategy",
+    "concept": "VWAP is an intraday indicator that calculates the average price of an asset weighted by volume. It provides a benchmark for institutional traders to assess fair value and execution quality.",
+    "calculation": "VWAP = Cumulative (Price * Volume) / Cumulative Volume. Example: If total traded value = $1,000,000 and volume = 50,000 shares, VWAP = $20.",
+    "parameters": "Intraday only; resets at each new trading session.",
+    "use_cases": [
+      "Benchmark for institutional order execution.",
+      "Identifying support/resistance zones intraday.",
+      "Mean reversion trades when price deviates significantly from VWAP."
+    ],
+    "advantages": [
+      "Accounts for both price and volume.",
+      "Widely used by institutions.",
+      "Objective benchmark for trade quality."
+    ],
+    "disadvantages": [
+      "Intraday only — not useful for longer timeframes.",
+      "Price may hover around VWAP, reducing clarity.",
+      "Not predictive — more of a reference tool."
+    ],
+    "example": "Day traders often monitor when price crosses VWAP to identify intraday reversals or continuations.",
+    "variations": [
+      "Anchored VWAP: VWAP starting from a chosen event (earnings, breakout).",
+      "Multiple VWAPs: Using different start times within the day."
+    ]
+  },
+  {
+    "title": "ADX (Average Directional Index)",
+    "category": "Technical Strategy",
+    "concept": "The ADX, developed by J. Welles Wilder Jr., measures trend strength regardless of direction. It is part of the Directional Movement System, which also includes +DI and -DI lines. ADX ranges from 0 to 100, with higher values indicating stronger trends.",
+    "calculation": "ADX = 100 * EMA of (|+DI - -DI| / (+DI + -DI)). Example: If +DI = 30, -DI = 20, ADX = 100 * (10/50) = 20.",
+    "parameters": "Default = 14 periods. Traders may adjust to 7 for faster signals or 21 for smoother readings.",
+    "use_cases": [
+      "Confirming trend strength.",
+      "Filtering trades — only take signals when ADX > 25.",
+      "Avoiding whipsaws in low-trend conditions."
+    ],
+    "advantages": [
+      "Separates trending vs non-trending conditions.",
+      "Useful filter with other indicators.",
+      "Works across assets and timeframes."
+    ],
+    "disadvantages": [
+      "Does not indicate trend direction alone.",
+      "Lagging due to averaging.",
+      "Whipsaws possible around threshold levels."
+    ],
+    "example": "In 2017, Bitcoin's ADX exceeded 40, confirming a very strong trend during its parabolic rally.",
+    "variations": [
+      "ADX + DI Strategy: Buy when +DI > -DI and ADX rising.",
+      "ADX Breakout: Trade only when ADX rises above 25."
+    ]
+  },
+  {
+    "title": "On-Balance Volume (OBV)",
+    "category": "Technical Strategy",
+    "concept": "OBV, developed by Joseph Granville, measures cumulative buying and selling pressure by adding volume on up days and subtracting it on down days. It is used to confirm price trends or detect divergences.",
+    "calculation": "If Close > Previous Close, OBV = Previous OBV + Volume. If Close < Previous Close, OBV = Previous OBV - Volume. If equal, OBV unchanged.",
+    "parameters": "No adjustable parameters — cumulative calculation.",
+    "use_cases": [
+      "Confirming price trends: OBV rising with price = strong trend.",
+      "Spotting divergences: price rising but OBV flat/falling = potential reversal.",
+      "Volume-based validation of breakouts."
+    ],
+    "advantages": [
+      "Incorporates volume into analysis.",
+      "Simple cumulative logic.",
+      "Useful for confirming trend strength."
+    ],
+    "disadvantages": [
+      "Does not provide entry/exit points directly.",
+      "Sensitive to volume spikes.",
+      "Divergences can persist without reversals."
+    ],
+    "example": "In 2020, OBV confirmed bullish breakouts in tech stocks as volume accumulated alongside rising prices.",
+    "variations": [
+      "OBV with Moving Average: Smooth OBV with an MA for trend clarity.",
+      "OBV Divergence Strategy: Focus only on divergence signals."
+    ]
+  },
+  {
+    "title": "Pivot Points",
+    "category": "Technical Strategy",
+    "concept": "Pivot Points are intraday support and resistance levels calculated from the previous day's price action. Widely used by day traders, they help anticipate potential reversal or breakout zones.",
+    "calculation": "Pivot = (High + Low + Close) / 3. Support 1 = (2 * Pivot) - High, Resistance 1 = (2 * Pivot) - Low. Additional levels (S2, S3, R2, R3) follow similar formulas.",
+    "parameters": "Standard pivot points are daily; weekly/monthly pivots also used.",
+    "use_cases": [
+      "Identify intraday support/resistance.",
+      "Spot breakout levels when price crosses pivot.",
+      "Set entry/exit targets based on pivot levels."
+    ],
+    "advantages": [
+      "Simple to calculate.",
+      "Widely used, making them self-fulfilling.",
+      "Useful for intraday strategies."
+    ],
+    "disadvantages": [
+      "Less effective in trending markets.",
+      "Only short-term relevance.",
+      "Not adaptive to volatility."
+    ],
+    "example": "Forex traders often use daily pivot points to plan trades, buying near support and selling near resistance.",
+    "variations": [
+      "Fibonacci Pivot Points: Use Fibonacci ratios for support/resistance.",
+      "Camarilla Pivots: Alternative formula with closer support/resistance levels."
+    ]
+  },
+  {
+    "title": "Elliott Wave Theory",
+    "category": "Technical Strategy",
+    "concept": "Developed by Ralph Nelson Elliott in the 1930s, Elliott Wave Theory is a method of technical analysis that identifies recurring fractal wave patterns in financial markets. The theory suggests that prices move in repetitive cycles driven by collective psychology.",
+    "calculation": "Waves are classified into impulse waves (5-wave patterns) and corrective waves (3-wave patterns). Example: A 5-wave uptrend followed by a 3-wave correction.",
+    "parameters": "No fixed formula; interpretation relies on wave counting and Fibonacci ratios.",
+    "use_cases": [
+      "Forecasting long-term market cycles.",
+      "Identifying corrective vs impulsive phases.",
+      "Projecting price targets with Fibonacci ratios."
+    ],
+    "advantages": [
+      "Provides a structured framework for market psychology.",
+      "Integrates well with Fibonacci analysis.",
+      "Widely used by long-term traders."
+    ],
+    "disadvantages": [
+      "Highly subjective interpretation.",
+      "Difficult for beginners.",
+      "Not suitable for short-term trading."
+    ],
+    "example": "During the 2009-2020 bull market, analysts identified a large Elliott Wave 5th impulse wave, predicting eventual correction in 2020.",
+    "variations": [
+      "NeoWave: A more rule-based modern approach.",
+      "Wave Extensions/Truncations: Variants within impulse structures."
+    ]
+  },
+  {
+    "title": "Williams %R",
+    "category": "Technical Strategy",
+    "concept": "Williams %R, developed by Larry Williams, is a momentum oscillator that measures overbought and oversold levels relative to the high-low range over a set period. It is similar to the Stochastic Oscillator but plotted inversely (-100 to 0).",
+    "calculation": "%R = (Highest High - Close) / (Highest High - Lowest Low) * -100. Example: If High = 100, Low = 80, Close = 90, %R = (100-90)/(100-80)*-100 = -50.",
+    "parameters": "Default = 14 periods. Thresholds: -20 (overbought), -80 (oversold).",
+    "use_cases": [
+      "Identify overbought (>-20) and oversold (<-80) conditions.",
+      "Generate entry/exit signals on crossovers.",
+      "Spot divergences between %R and price."
+    ],
+    "advantages": [
+      "Simple and intuitive.",
+      "Effective in ranging markets.",
+      "Responsive to price changes."
+    ],
+    "disadvantages": [
+      "False signals in trending markets.",
+      "Lagging in strong momentum moves.",
+      "Sensitive to chosen period length."
+    ],
+    "example": "In late 2018, Williams %R signaled oversold conditions in the Dow Jones index, preceding a holiday-season rally.",
+    "variations": [
+      "Combined with Moving Averages for trend confirmation.",
+      "Williams %R Divergence Strategy."
+    ]
+  }
+]

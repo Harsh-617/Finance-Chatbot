@@ -1,0 +1,410 @@
+[
+  {
+    "title": "Diversification",
+    "category": "Risk Management",
+    "concept": "Diversification involves spreading investments across different assets, sectors, and geographies to reduce exposure to any single risk. The idea is that not all assets move in the same direction, so losses in one area can be offset by gains in another.",
+    "calculation": "Portfolio Variance = Weighted Average of Asset Variances - (Correlation * Weights * Std Deviations). Example: A portfolio of stocks and bonds has lower overall risk than holding only stocks.",
+    "parameters": "Asset allocation mix, correlation between assets, number of holdings.",
+    "use_cases": [
+      "Balancing equity risk with bonds or commodities.",
+      "Reducing volatility in retirement portfolios.",
+      "Global diversification to mitigate country-specific risks."
+    ],
+    "advantages": [
+      "Reduces unsystematic (company-specific) risk.",
+      "Smoother returns over time.",
+      "Applicable to both small and large portfolios."
+    ],
+    "disadvantages": [
+      "Does not eliminate market-wide risk.",
+      "Over-diversification may dilute returns.",
+      "Requires monitoring correlations, which can change over time."
+    ],
+    "example": "During the 2008 crisis, portfolios with exposure to bonds and gold performed better than those invested only in equities.",
+    "variations": [
+      "Geographic Diversification.",
+      "Sector Diversification.",
+      "Multi-Asset Diversification."
+    ]
+  },
+  {
+    "title": "Stop-Loss Orders",
+    "category": "Risk Management",
+    "concept": "A stop-loss order automatically sells a security when it reaches a predefined price level, limiting potential losses. It enforces discipline by preventing emotions from influencing sell decisions.",
+    "calculation": "Stop-Loss Price = Entry Price * (1 - Stop %). Example: If a trader buys a stock at $100 with a 10% stop-loss, the order executes at $90.",
+    "parameters": "Entry price, stop-loss percentage, volatility of the asset.",
+    "use_cases": [
+      "Day trading to cap intraday losses.",
+      "Swing trading to protect capital.",
+      "Long-term portfolios with downside protection."
+    ],
+    "advantages": [
+      "Prevents catastrophic losses.",
+      "Enforces discipline and removes emotions.",
+      "Automated, requires no constant monitoring."
+    ],
+    "disadvantages": [
+      "May trigger prematurely in volatile markets.",
+      "Does not guarantee execution price in fast-moving markets.",
+      "Can lock in losses during temporary pullbacks."
+    ],
+    "example": "A trader sets a stop-loss on Tesla at $250. If the stock drops from $300 to $250, the position is closed automatically.",
+    "variations": [
+      "Fixed Percentage Stop-Loss.",
+      "Volatility-Based Stop-Loss."
+    ]
+  },
+  {
+    "title": "Take-Profit Orders",
+    "category": "Risk Management",
+    "concept": "Take-profit orders lock in gains by automatically selling an asset when it reaches a predefined profit level. This prevents greed from keeping traders in positions too long.",
+    "calculation": "Take-Profit Price = Entry Price * (1 + Target %). Example: Buying a stock at $100 with a 20% target sets the take-profit order at $120.",
+    "parameters": "Entry price, profit target percentage, asset volatility.",
+    "use_cases": [
+      "Day traders securing intraday gains.",
+      "Swing traders capturing medium-term price moves.",
+      "Systematic strategies with fixed reward targets."
+    ],
+    "advantages": [
+      "Locks in profits before market reversals.",
+      "Reduces decision-making stress.",
+      "Can be automated with trading platforms."
+    ],
+    "disadvantages": [
+      "May exit early before larger moves.",
+      "Requires precise calibration of targets.",
+      "Not suitable for long-term buy-and-hold investors."
+    ],
+    "example": "A trader sets a take-profit order at $50 after buying at $40. Once the stock hits $50, the trade closes with profit.",
+    "variations": [
+      "Fixed Percentage Target.",
+      "Technical Level Target (support/resistance)."
+    ]
+  },
+  {
+    "title": "Position Sizing",
+    "category": "Risk Management",
+    "concept": "Position sizing determines how much capital to allocate per trade, ensuring no single trade can cause significant portfolio damage. A common rule is risking only 1-2% of total capital per position.",
+    "calculation": "Position Size = (Risk per Trade * Portfolio Value) ÷ Stop-Loss Distance. Example: With a $10,000 portfolio, risking 2% ($200) and stop-loss at $5 → Position size = 40 shares.",
+    "parameters": "Account size, risk tolerance, stop-loss distance, trade frequency.",
+    "use_cases": [
+      "Day and swing trading risk control.",
+      "Portfolio allocation for volatile assets like crypto.",
+      "Systematic risk-adjusted position scaling."
+    ],
+    "advantages": [
+      "Prevents overexposure to single trades.",
+      "Scales portfolio risk consistently.",
+      "Adapts to both conservative and aggressive investors."
+    ],
+    "disadvantages": [
+      "Requires precise stop-loss placement.",
+      "Overly small positions may limit returns.",
+      "High transaction costs for very small trades."
+    ],
+    "example": "A forex trader risks 1% of their account per trade, ensuring that even after 10 losing trades, capital is preserved.",
+    "variations": [
+      "Fixed Fractional Position Sizing.",
+      "Volatility-Based Position Sizing."
+    ]
+  },
+  {
+    "title": "Hedging",
+    "category": "Risk Management",
+    "concept": "Hedging involves using financial instruments like options, futures, or inverse ETFs to offset potential losses in a portfolio. The goal is to reduce downside risk while maintaining core positions.",
+    "calculation": "Hedge Ratio = Value of Hedge ÷ Value of Position. Example: An investor with $100,000 in S&P 500 stocks buys SPY put options worth $20,000 for partial downside protection.",
+    "parameters": "Type of hedge (options, futures, ETFs), hedge ratio, cost of hedge.",
+    "use_cases": [
+      "Protecting long portfolios during uncertain markets.",
+      "Currency hedging for international investors.",
+      "Commodities hedging for producers/exporters."
+    ],
+    "advantages": [
+      "Provides downside protection.",
+      "Flexible across asset classes.",
+      "Can be tailored to specific risks."
+    ],
+    "disadvantages": [
+      "Hedging costs reduce returns.",
+      "Imperfect hedges may not fully offset losses.",
+      "Requires expertise in derivatives."
+    ],
+    "example": "An airline hedges rising oil prices by buying oil futures, reducing exposure to fuel cost volatility.",
+    "variations": [
+      "Options Hedging.",
+      "Futures Hedging.",
+      "Inverse ETF Hedging."
+    ]
+  },
+  {
+    "title": "Risk/Reward Ratio",
+    "category": "Risk Management",
+    "concept": "The risk/reward ratio compares potential profit to potential loss on a trade. It helps traders assess whether a trade offers sufficient upside relative to downside risk.",
+    "calculation": "Risk/Reward Ratio = Potential Loss ÷ Potential Gain. Example: If risking $100 for a potential $300 gain, the ratio is 1:3.",
+    "parameters": "Entry price, stop-loss level, take-profit target.",
+    "use_cases": [
+      "Evaluating trade setups before entering.",
+      "Systematic backtesting of trading strategies.",
+      "Portfolio-level risk optimization."
+    ],
+    "advantages": [
+      "Quantifies trade attractiveness.",
+      "Encourages disciplined decision-making.",
+      "Improves long-term profitability when applied consistently."
+    ],
+    "disadvantages": [
+      "Estimates depend on uncertain targets.",
+      "High reward ratios may have lower win rates.",
+      "Not all asset classes behave predictably."
+    ],
+    "example": "A trader only takes trades with a minimum 1:3 risk/reward, ensuring long-term profitability even with a 40% win rate.",
+    "variations": [
+      "Static Risk/Reward Ratios.",
+      "Dynamic Ratios based on volatility."
+    ]
+  },
+  {
+    "title": "Kelly Criterion",
+    "category": "Risk Management",
+    "concept": "The Kelly Criterion is a formula for optimal bet sizing that maximizes portfolio growth over time while minimizing risk of ruin. It balances probability of success with payoff ratios.",
+    "calculation": "f* = (bp - q) / b, where f* = fraction of capital to risk, b = odds, p = probability of win, q = probability of loss. Example: If win probability is 60% with 1:1 payoff, Kelly suggests risking 20% of capital per trade.",
+    "parameters": "Win probability, payoff ratio, portfolio capital.",
+    "use_cases": [
+      "Professional traders sizing bets in poker and markets.",
+      "Long-term capital growth optimization.",
+      "Algorithmic strategies with known probabilities."
+    ],
+    "advantages": [
+      "Maximizes long-term portfolio growth.",
+      "Balances risk and reward mathematically.",
+      "Adapts position sizes dynamically."
+    ],
+    "disadvantages": [
+      "Requires accurate probability estimates.",
+      "Overestimation of win rate can cause large losses.",
+      "Too aggressive for risk-averse investors."
+    ],
+    "example": "Edward Thorp, a mathematician and hedge fund manager, used Kelly Criterion successfully in both blackjack and stock markets.",
+    "variations": [
+      "Full Kelly.",
+      "Fractional Kelly."
+    ]
+  },
+  {
+    "title": "Value at Risk (VaR)",
+    "category": "Risk Management",
+    "concept": "Value at Risk (VaR) estimates the maximum expected loss of a portfolio over a given time horizon at a specified confidence level. Widely used by banks and funds to measure downside exposure.",
+    "calculation": "VaR = (Portfolio Value * Volatility * z-Score * √Time). Example: A $1M portfolio with daily volatility of 2% at 95% confidence has a 1-day VaR of $32,900.",
+    "parameters": "Confidence level (95%, 99%), time horizon, volatility, correlations.",
+    "use_cases": [
+      "Bank regulatory capital requirements.",
+      "Risk budgeting in hedge funds.",
+      "Measuring downside risk in portfolios."
+    ],
+    "advantages": [
+      "Provides a single, quantifiable risk metric.",
+      "Widely accepted by regulators.",
+      "Adaptable across asset classes."
+    ],
+    "disadvantages": [
+      "Assumes normal distribution (underestimates tail risk).",
+      "Not predictive of black swan events.",
+      "Complex to calculate for non-linear instruments."
+    ],
+    "example": "JP Morgan popularized VaR in the 1990s with its RiskMetrics framework, later adopted across global finance.",
+    "variations": [
+      "Historical VaR.",
+      "Parametric VaR.",
+      "Monte Carlo VaR."
+    ]
+  },
+  {
+    "title": "Stress Testing / Scenario Analysis",
+    "category": "Risk Management",
+    "concept": "Stress testing and scenario analysis simulate extreme market conditions to evaluate how a portfolio might perform under crises, such as recessions, interest rate spikes, or geopolitical shocks.",
+    "calculation": "Example: A 20% equity market drop combined with a 200bps rise in interest rates is applied to a portfolio to estimate losses.",
+    "parameters": "Historical stress events, hypothetical shocks, correlations.",
+    "use_cases": [
+      "Regulatory stress tests for banks.",
+      "Portfolio managers preparing for black swan events.",
+      "Assessing systemic risk exposure."
+    ],
+    "advantages": [
+      "Reveals vulnerabilities not visible in normal models.",
+      "Helps design contingency plans.",
+      "Supports capital allocation decisions."
+    ],
+    "disadvantages": [
+      "Assumptions may not match future crises.",
+      "Highly scenario-dependent.",
+      "Complex for large, multi-asset portfolios."
+    ],
+    "example": "Banks conduct Federal Reserve CCAR stress tests to prove resilience under extreme recession scenarios.",
+    "variations": [
+      "Historical Stress Testing.",
+      "Hypothetical Scenario Analysis."
+    ]
+  },
+  {
+    "title": "Portfolio Rebalancing",
+    "category": "Risk Management",
+    "concept": "Rebalancing involves periodically realigning a portfolio's asset allocation back to target weights. It ensures that risk exposures remain consistent with an investor's objectives.",
+    "calculation": "Rebalancing Trigger = Deviation from Target Allocation. Example: A 60/40 portfolio becomes 70/30 after a stock rally. The investor sells equities and buys bonds to restore 60/40.",
+    "parameters": "Rebalancing frequency (quarterly, annually), tolerance bands (5-10%), transaction costs.",
+    "use_cases": [
+      "Maintaining risk-return balance in retirement portfolios.",
+      "Preventing overexposure to outperforming assets.",
+      "Aligning with changing market conditions."
+    ],
+    "advantages": [
+      "Controls risk creep over time.",
+      "Systematic discipline prevents emotional drift.",
+      "Supports long-term goals and stability."
+    ],
+    "disadvantages": [
+      "Incurs transaction costs and taxes.",
+      "May reduce returns during strong asset trends.",
+      "Requires monitoring and execution discipline."
+    ],
+    "example": "Institutional funds rebalance quarterly to stay within target allocation ranges set by investment committees.",
+    "variations": [
+      "Calendar-Based Rebalancing.",
+      "Threshold-Based Rebalancing."
+    ]
+  },
+  {
+    "title": "Trailing Stops",
+    "category": "Risk Management",
+    "concept": "A trailing stop is a dynamic stop-loss that moves with the asset price, locking in gains as the price rises but protecting downside if the price falls. It combines protection with flexibility.",
+    "calculation": "Trailing Stop = Entry Price * (1 - % Distance). Example: A stock bought at $100 with a 10% trailing stop sells automatically if price falls 10% from the highest level reached.",
+    "parameters": "Stop percentage, volatility of asset, holding period.",
+    "use_cases": [
+      "Trend-following traders.",
+      "Swing trading volatile assets.",
+      "Automated trading strategies."
+    ],
+    "advantages": [
+      "Locks in profits as markets rise.",
+      "Reduces emotional selling decisions.",
+      "Suitable for automated trading platforms."
+    ],
+    "disadvantages": [
+      "May trigger prematurely in volatile markets.",
+      "Does not guarantee execution price in gaps.",
+      "Can underperform fixed take-profit in rapid moves."
+    ],
+    "example": "A crypto trader sets a 15% trailing stop on Bitcoin, capturing upside while limiting downside.",
+    "variations": [
+      "Fixed % Trailing Stop.",
+      "ATR-Based Trailing Stop."
+    ]
+  },
+  {
+    "title": "Margin Management",
+    "category": "Risk Management",
+    "concept": "Margin management involves controlling the use of borrowed funds to trade. Over-leverage can magnify losses, so disciplined margin usage ensures sustainability.",
+    "calculation": "Leverage Ratio = Total Exposure ÷ Equity. Example: With $10,000 equity, trading $50,000 exposure = 5* leverage.",
+    "parameters": "Margin requirements, leverage ratio, broker risk policies.",
+    "use_cases": [
+      "Forex and futures trading.",
+      "Retail traders managing CFD leverage.",
+      "Institutional funds using derivatives with margin."
+    ],
+    "advantages": [
+      "Enables higher capital efficiency.",
+      "Flexibility to scale positions.",
+      "Can amplify returns with prudent usage."
+    ],
+    "disadvantages": [
+      "Magnifies losses during downturns.",
+      "Margin calls can force liquidation.",
+      "High risk of ruin for inexperienced traders."
+    ],
+    "example": "During 2020 market volatility, many retail traders on margin faced forced liquidations as equities plunged.",
+    "variations": [
+      "Low-Leverage Trading.",
+      "Dynamic Margin Adjustment."
+    ]
+  },
+  {
+    "title": "Volatility Targeting",
+    "category": "Risk Management",
+    "concept": "Volatility targeting adjusts portfolio exposure based on market volatility. Investors reduce exposure during high volatility and increase it during stable periods to maintain a consistent risk profile.",
+    "calculation": "Target Exposure = Desired Volatility ÷ Realized Volatility * Current Exposure. Example: If portfolio volatility rises above 10%, exposure is reduced to rebalance risk.",
+    "parameters": "Target volatility, measurement window, leverage adjustments.",
+    "use_cases": [
+      "Risk parity funds balancing across assets.",
+      "Institutional funds smoothing portfolio risk.",
+      "Systematic strategies managing leverage dynamically."
+    ],
+    "advantages": [
+      "Stabilizes portfolio risk.",
+      "Prevents excessive drawdowns.",
+      "Data-driven and systematic."
+    ],
+    "disadvantages": [
+      "May reduce exposure during rallies.",
+      "Depends on backward-looking volatility estimates.",
+      "Can lead to whipsaw adjustments in choppy markets."
+    ],
+    "example": "Many hedge funds target 10% annualized volatility, adjusting leverage up or down to stay on target.",
+    "variations": [
+      "Volatility Scaling.",
+      "Risk Parity Strategies."
+    ]
+  },
+  {
+    "title": "Drawdown Control",
+    "category": "Risk Management",
+    "concept": "Drawdown control sets limits on how much a portfolio can lose from peak value before action is taken (e.g., reducing exposure or halting trading). It ensures capital preservation.",
+    "calculation": "Drawdown = (Peak Portfolio Value - Trough Portfolio Value) ÷ Peak Value. Example: A $1M portfolio drops to $800K → 20% drawdown.",
+    "parameters": "Maximum allowable drawdown, stop-out rules, reset conditions.",
+    "use_cases": [
+      "Hedge funds protecting investor capital.",
+      "Traders using equity stop-outs.",
+      "Systematic funds embedding max drawdown thresholds."
+    ],
+    "advantages": [
+      "Caps catastrophic losses.",
+      "Protects psychological and financial capital.",
+      "Creates structured discipline."
+    ],
+    "disadvantages": [
+      "Can lock in losses during recoverable dips.",
+      "May reduce long-term returns if too strict.",
+      "Requires accurate monitoring and enforcement."
+    ],
+    "example": "A fund halts trading if portfolio drawdown exceeds 15%, preserving capital for recovery.",
+    "variations": [
+      "Absolute Drawdown Limits.",
+      "Relative Drawdown Limits."
+    ]
+  },
+  {
+    "title": "Correlation Analysis",
+    "category": "Risk Management",
+    "concept": "Correlation analysis measures how assets move relative to each other, helping investors avoid unintended concentration risks. Low or negative correlations improve diversification benefits.",
+    "calculation": "Correlation Coefficient (ρ, rho) = Cov(X,Y) ÷ (σX * σY, sigma_X * sigma_Y). Example: Stocks and bonds often have low correlation, reducing total portfolio risk.",
+    "parameters": "Asset pair correlations, rolling correlation windows, cross-asset analysis.",
+    "use_cases": [
+      "Constructing balanced multi-asset portfolios.",
+      "Hedge funds reducing correlated risk exposures.",
+      "Risk parity allocation strategies."
+    ],
+    "advantages": [
+      "Improves portfolio diversification.",
+      "Identifies hidden risk concentrations.",
+      "Helps optimize capital allocation."
+    ],
+    "disadvantages": [
+      "Correlations change over time.",
+      "During crises, correlations often converge to 1.",
+      "Complex in large multi-asset portfolios."
+    ],
+    "example": "During COVID-19 selloff, normally uncorrelated assets (stocks, commodities) suddenly fell together, breaking diversification assumptions.",
+    "variations": [
+      "Rolling Correlation Monitoring.",
+      "Cross-Asset Correlation Models."
+    ]
+  }
+]

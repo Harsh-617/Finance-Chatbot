@@ -2,6 +2,13 @@ import requests
 import os
 import json
 from dotenv import load_dotenv
+# Import RAG components
+try:
+    from rag.rag_retrieval import get_rag_retrieval, get_knowledge_context
+    RAG_AVAILABLE = True
+except ImportError:
+    print("RAG components not available. Financial queries will work without RAG enhancement.")
+    RAG_AVAILABLE = False
 
 load_dotenv()
 
@@ -358,30 +365,56 @@ def format_top_movers_response(data, asset_type, count):
 # ============= CHATBOT RESPONSE FUNCTIONS =============
 
 def answer_financial_query(user_input):
-    """Answer general financial questions using Groq"""
+    """Answer general financial questions using Groq with RAG enhancement"""
     if not GROQ_API_KEY:
         return "I apologize, but I need API access to answer financial questions right now."
+    
+    # Get RAG context if available
+    rag_context = ""
+    if RAG_AVAILABLE:
+        try:
+            rag = get_rag_retrieval()
+            if rag.is_available():
+                search_result = rag.smart_search(user_input)
+                if search_result["found_relevant"]:
+                    rag_context = search_result["context"]
+                    print(f"DEBUG - RAG found relevant knowledge using {search_result['method']}")
+                else:
+                    print(f"DEBUG - RAG search completed but low relevance (max: {search_result.get('max_similarity', 0):.2f})")
+        except Exception as e:
+            print(f"DEBUG - RAG search error: {e}")
     
     headers = {
         "Authorization": f"Bearer {GROQ_API_KEY}",
         "Content-Type": "application/json"
     }
     
-    prompt = f"""
-    You are a knowledgeable financial advisor AI with expertise in stocks, cryptocurrency, forex, and financial markets. 
-    Answer the user's financial question clearly and comprehensively. Be concise and direct.
-    
-    Guidelines:
-    - Provide accurate, educational explanations of financial concepts
-    - Use simple language but maintain professional accuracy
-    - If the question requires real-time data, suggest specific queries they can ask
-    - Draw from your knowledge of financial markets, trading, investment principles, and economic concepts
-    - Be helpful and informative without being overly technical
-    - Try to answer each query in 2-3 paragraphs
-    - answer only what is asked
+    # Enhanced prompt with RAG context
+    base_prompt = """You are a knowledgeable financial advisor AI with expertise in stocks, cryptocurrency, forex, and financial markets. 
+Answer the user's financial question clearly and comprehensively. Be concise and direct.
 
-    User question: {user_input}
-    """
+Guidelines:
+- Provide accurate, educational explanations of financial concepts
+- Use simple language but maintain professional accuracy
+- If the question requires real-time data, suggest specific queries they can ask
+- Draw from your knowledge of financial markets, trading, investment principles, and economic concepts
+- Be helpful and informative without being overly technical
+- Try to answer each query in 2-3 paragraphs
+- Answer only what is asked"""
+
+    if rag_context:
+        prompt = f"""{base_prompt}
+
+{rag_context}
+
+Based on the above knowledge and your expertise, please answer this question:
+User question: {user_input}
+
+If the provided knowledge is relevant, incorporate it naturally into your answer. If not relevant, answer based on your general knowledge."""
+    else:
+        prompt = f"""{base_prompt}
+
+User question: {user_input}"""
     
     payload = {
         "model": "llama-3.1-8b-instant",
@@ -389,7 +422,7 @@ def answer_financial_query(user_input):
             {"role": "user", "content": prompt}
         ],
         "temperature": 0.7,
-        "max_tokens": 300
+        "max_tokens": 400  # Increased for RAG-enhanced responses
     }
     
     try:

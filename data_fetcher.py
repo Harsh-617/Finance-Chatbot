@@ -10,6 +10,7 @@ load_dotenv()
 FINNHUB_API_KEY = os.getenv('FINNHUB_API_KEY')
 ALPHA_VANTAGE_API_KEY = os.getenv('ALPHA_VANTAGE_API_KEY')
 CRYPTOCOMPARE_API_KEY = os.getenv('CRYPTOCOMPARE_API_KEY')
+TWELVE_DATA_API_KEY = os.getenv("TWELVE_DATA_API_KEY")
 
 CRYPTOCOMPARE_BASE_URL = "https://min-api.cryptocompare.com/data"
 COINGECKO_BASE_URL = "https://api.coingecko.com/api/v3"
@@ -257,85 +258,96 @@ def get_stock_price_overview(symbol):
     """Get stock price overview from Finnhub"""
     try:
         url = f"{FINNHUB_BASE_URL}/quote"
-        params = {
-            'symbol': symbol.upper(),
-            'token': FINNHUB_API_KEY
-        }
+        params = {'symbol': symbol.upper(), 'token': FINNHUB_API_KEY}
         response = requests.get(url, params=params, timeout=10)
         response.raise_for_status()
-        data = response.json()
-        return data
-        
+        return response.json()
     except Exception as e:
         print(f"Error fetching stock price overview: {e}")
+
+    # ---------- Twelve Data fallback ----------
+    try:
+        url = "https://api.twelvedata.com/quote"
+        params = {'symbol': symbol.upper(), 'apikey': TWELVE_DATA_API_KEY}
+        r = requests.get(url, params=params, timeout=10)
+        r.raise_for_status()
+        data = r.json()
+        # map Twelve Data fields to Finnhub format
+        return {
+            'c': data.get('close'),
+            'h': data.get('high'),
+            'l': data.get('low'),
+            'o': data.get('open'),
+            'pc': data.get('previous_close'),
+            'dp': data.get('percent_change')
+        }
+    except Exception as e2:
+        print(f"Twelve Data price fallback failed: {e2}")
         return None
 
 def get_stock_fundamentals(symbol):
     """Get stock fundamentals from Finnhub"""
     try:
         url = f"{FINNHUB_BASE_URL}/stock/metric"
-        params = {
-            'symbol': symbol.upper(),
-            'metric': 'all',
-            'token': FINNHUB_API_KEY
-        }
+        params = {'symbol': symbol.upper(), 'metric': 'all', 'token': FINNHUB_API_KEY}
         response = requests.get(url, params=params, timeout=10)
         response.raise_for_status()
-        data = response.json()
-        return data.get('metric', {})
-        
+        return response.json().get('metric', {})
     except Exception as e:
         print(f"Error fetching stock fundamentals: {e}")
+
+    # ---------- Twelve Data fallback ----------
+    try:
+        url = "https://api.twelvedata.com/statistics"
+        params = {'symbol': symbol.upper(), 'apikey': TWELVE_DATA_API_KEY}
+        r = requests.get(url, params=params, timeout=10)
+        r.raise_for_status()
+        data = r.json()
+        # map to Finnhub-like dict
+        d = data.get('statistics', {})
+        return {
+            'marketCapitalization': d.get('market_cap'),
+            'peBasicExclExtraTTM':  d.get('pe_ratio'),
+            'epsInclExtraItemsTTM': d.get('eps'),
+            'beta': d.get('beta')
+        }
+    except Exception as e2:
+        print(f"Twelve Data fundamentals fallback failed: {e2}")
         return None
 
 
 def get_stock_ohlc(symbol, time_period='30d'):
-    """Stock OHLC: Alpha-Vantage daily, aggregated 7-day bar if 7d, Finnhub fallback."""
+    days_map = {'1d': 1, '7d': 7, '30d': 30, '90d': 90, '1y': 365}
+    """Stock OHLC: Alpha-Vantage daily, aggregated 7-day bar if 7d, Finnhub fallback, Twelve Data final fallback."""
     try:
-        # ---------- Alpha-Vantage daily ----------
+        # ---------- Alpha-Vantage block (keep your existing code) ----------
         url = "https://www.alphavantage.co/query"
-        params = {'function': 'TIME_SERIES_DAILY',
-                  'symbol': symbol.upper(),
-                  'outputsize': 'full',
-                  'apikey': ALPHA_VANTAGE_API_KEY}
+        params = {'function': 'TIME_SERIES_DAILY', 'symbol': symbol.upper(),
+                  'outputsize': 'full', 'apikey': ALPHA_VANTAGE_API_KEY}
         r = requests.get(url, params=params, timeout=15)
         r.raise_for_status()
         data = r.json()
-
         if 'Error Message' in data or 'Note' in data:
             raise ValueError("AV error/limit")
-
         series = data.get('Time Series (Daily)', {})
         if not series:
             raise ValueError("No daily data")
-
-        # sort newest-last, slice requested span
-        days_map = {'1d': 1, '7d': 7, '30d': 30, '90d': 90, '1y': 365}
         span = days_map.get(time_period, 30)
-        dates = sorted(series.keys())[-span:]          # oldest → newest
-
-        # build small list[dict] for the span
+        dates = sorted(series.keys())[-span:]
         bars = [{'open': float(series[d]['1. open']),
                  'high': float(series[d]['2. high']),
                  'low':  float(series[d]['3. low']),
                  'close':float(series[d]['4. close'])} for d in dates]
-
-        # weekly aggregation
         if time_period == '7d' and len(bars) == 7:
-            return {'open':  bars[0]['open'],
-                    'high':  max(b['high'] for b in bars),
-                    'low':   min(b['low']  for b in bars),
-                    'close': bars[-1]['close']}
-
-        # latest daily bar
+            return {'open': bars[0]['open'], 'high': max(b['high'] for b in bars),
+                    'low':  min(b['low']  for b in bars), 'close': bars[-1]['close']}
         latest = bars[-1]
         return {'open': latest['open'], 'high': latest['high'],
                 'low': latest['low'], 'close': latest['close']}
-
     except Exception as e:
         print(f"Alpha-Vantage OHLC failed for {symbol}: {e}")
-        # ---------- Finnhub fallback ----------
         try:
+            # ---------- Finnhub fallback (keep your existing code) ----------
             end = int(time.time())
             start = end - 86400 * (days_map.get(time_period, 30) + 1)
             url = f"{FINNHUB_BASE_URL}/stock/candle"
@@ -349,45 +361,88 @@ def get_stock_ohlc(symbol, time_period='30d'):
                         'low': data['l'][-1], 'close': data['c'][-1]}
         except Exception as e2:
             print(f"Finnhub fallback also failed: {e2}")
-            return None
+
+            # ---------- Twelve Data final fallback ----------
+            try:
+                interval = {'1d': '1min', '7d': '1day', '30d': '1day', '90d': '1day', '1y': '1day'}.get(time_period, '1day')
+                url = "https://api.twelvedata.com/time_series"
+                params = {'symbol': symbol.upper(), 'interval': interval,
+                          'outputsize': str(days_map.get(time_period, 30) + 1),
+                          'apikey': TWELVE_DATA_API_KEY}
+                r = requests.get(url, params=params, timeout=10)
+                r.raise_for_status()
+                data = r.json()
+                values = data.get('values', [])
+                if not values:
+                    raise ValueError("No data")
+                latest = values[0]          # newest-first
+                return {'open': float(latest['open']),
+                        'high': float(latest['high']),
+                        'low': float(latest['low']),
+                        'close': float(latest['close'])}
+            except Exception as e3:
+                print(f"Twelve Data OHLC fallback failed: {e3}")
+                return None
     return None
-
-
 
 
 def get_stock_earnings(symbol):
     """Get stock earnings data from Finnhub"""
     try:
         url = f"{FINNHUB_BASE_URL}/stock/earnings"
-        params = {
-            'symbol': symbol.upper(),
-            'token': FINNHUB_API_KEY
-        }
+        params = {'symbol': symbol.upper(), 'token': FINNHUB_API_KEY}
         response = requests.get(url, params=params, timeout=10)
         response.raise_for_status()
-        data = response.json()
-        return data
-        
+        return response.json()
     except Exception as e:
         print(f"Error fetching stock earnings: {e}")
+
+    # ---------- Twelve Data fallback ----------
+    try:
+        url = "https://api.twelvedata.com/earnings"
+        params = {'symbol': symbol.upper(), 'apikey': TWELVE_DATA_API_KEY}
+        r = requests.get(url, params=params, timeout=10)
+        r.raise_for_status()
+        data = r.json()
+        # return list of quarterly records
+        return data.get('earnings', [])
+    except Exception as e2:
+        print(f"Twelve Data earnings fallback failed: {e2}")
         return None
+    
 
 def get_stock_analyst_ratings(symbol):
     """Get stock analyst ratings from Finnhub"""
     try:
         url = f"{FINNHUB_BASE_URL}/stock/recommendation"
-        params = {
-            'symbol': symbol.upper(),
-            'token': FINNHUB_API_KEY
-        }
+        params = {'symbol': symbol.upper(), 'token': FINNHUB_API_KEY}
         response = requests.get(url, params=params, timeout=10)
         response.raise_for_status()
         data = response.json()
         return data[0] if data else None
-        
     except Exception as e:
         print(f"Error fetching stock analyst ratings: {e}")
+
+    # ---------- Twelve Data fallback ----------
+    try:
+        url = "https://api.twelvedata.com/analyst_estimates"
+        params = {'symbol': symbol.upper(), 'apikey': TWELVE_DATA_API_KEY}
+        r = requests.get(url, params=params, timeout=10)
+        r.raise_for_status()
+        data = r.json()
+        est = data.get('estimates', {})
+        # map to Finnhub-like dict
+        return {
+            'strongBuy': est.get('strong_buy'),
+            'buy': est.get('buy'),
+            'hold': est.get('hold'),
+            'sell': est.get('sell'),
+            'strongSell': est.get('strong_sell')
+        }
+    except Exception as e2:
+        print(f"Twelve Data analyst fallback failed: {e2}")
         return None
+    
 
 def get_stock_insider_ownership(symbol):
     """Get stock insider transactions from Finnhub"""
@@ -459,14 +514,15 @@ def get_stock_technicals(symbol):
 # ============= FOREX DATA FETCHERS =============
 
 def get_forex_exchange_rate(base, quote):
-    """Get forex exchange rate - Finnhub first, Alpha Vantage fallback"""
-    # Try Finnhub first
+    """Get forex exchange rate - Finnhub first, Alpha Vantage second, Twelve Data last"""
     result = get_forex_rate_finnhub(base, quote)
     if result:
         return result
-    
-    # Fallback to Alpha Vantage
-    return get_forex_rate_alpha_vantage(base, quote)
+    result = get_forex_rate_alpha_vantage(base, quote)
+    if result:
+        return result
+    # ---------- final fallback ----------
+    return get_forex_rate_twelve_data(base, quote)
 
 def get_forex_rate_finnhub(base, quote):
     """Get forex rate from Finnhub"""
@@ -554,6 +610,27 @@ def get_forex_rate_alpha_vantage(base, quote):
     except Exception as e:
         print(f"Error fetching forex rate from Alpha Vantage: {e}")
         return None
+
+
+def get_forex_rate_twelve_data(base, quote):
+    """Last-resort forex rate from Twelve Data"""
+    try:
+        url = "https://api.twelvedata.com/quote"
+        params = {'symbol': f"{base.upper()}/{quote.upper()}",
+                  'apikey': TWELVE_DATA_API_KEY}
+        r = requests.get(url, params=params, timeout=10)
+        r.raise_for_status()
+        data = r.json()
+        return {
+            'c': float(data['close']),
+            'h': float(data['high']),
+            'l': float(data['low']),
+            'dp': float(data.get('percent_change', 0))
+        }
+    except Exception as e:
+        print(f"Twelve Data forex fallback failed: {e}")
+        return None
+
 
 def get_forex_ohlc(base, quote, timeframe='daily'):
     """Get forex OHLC data from Finnhub"""
@@ -667,7 +744,7 @@ def get_top_crypto_by_mcap(limit=10):
 def get_top_stocks_by_mcap(limit=10):
     import os, requests, traceback
 
-    # 1. ---------- Finnhub (needs valid FINNHUB_API_KEY) ----------
+    # 1. Finnhub (keep your existing block)
     try:
         url = f"{FINNHUB_BASE_URL}/stock/most-active"
         r = requests.get(url, params={'token': FINNHUB_API_KEY}, timeout=10)
@@ -689,7 +766,7 @@ def get_top_stocks_by_mcap(limit=10):
     except Exception as e:
         print('FH most-active failed:', e)
 
-    # 2. ---------- Alpha-Vantage fallback ----------
+    # 2. Alpha-Vantage fallback (keep your existing block)
     try:
         url = 'https://www.alphavantage.co/query'
         params = {'function': 'TOP_GAINERS_LOSERS', 'apikey': ALPHA_VANTAGE_API_KEY}
@@ -700,7 +777,7 @@ def get_top_stocks_by_mcap(limit=10):
         if most_active:
             out = []
             for item in most_active:
-                pc = item['change_percentage'].strip('%')    # <- remove %
+                pc = item['change_percentage'].strip('%')
                 out.append({'symbol': item['ticker'],
                             'name': item.get('company_name', item['ticker']),
                             'price': float(item['price']),
@@ -709,6 +786,26 @@ def get_top_stocks_by_mcap(limit=10):
             return out
     except Exception as e:
         print('AV fallback failed:', e)
+        traceback.print_exc()
+
+    # 3. ---------- Twelve Data final fallback ----------
+    try:
+        url = "https://api.twelvedata.com/most_active"
+        params = {'apikey': TWELVE_DATA_API_KEY}
+        r = requests.get(url, params=params, timeout=10)
+        r.raise_for_status()
+        data = r.json()
+        symbols = data.get('most_active', [])[:limit]
+        out = []
+        for item in symbols:
+            out.append({'symbol': item['symbol'],
+                        'name': item.get('name', item['symbol']),
+                        'price': float(item['price']),
+                        'change_24h': float(item['change_percent'].strip('%')),
+                        'mcap': None})
+        return out
+    except Exception as e3:
+        print("Twelve Data top-movers fallback failed:", e3)
         traceback.print_exc()
 
     return None
